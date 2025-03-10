@@ -12,3 +12,7 @@ Added two new collaborators to the project
 Finished to clean the dataset, the dataset was already almost cleaned when we dowloaded it
 
 We needed to change our dataset as the ancient one was too small 
+
+We found a new dataset and edited it in the google docs and in the ReadMe file.
+On this new dataset : 
+- We deleted the last column because there were only NaN values 
