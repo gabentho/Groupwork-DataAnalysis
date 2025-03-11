@@ -16,3 +16,10 @@ We needed to change our dataset as the ancient one was too small
 We found a new dataset and edited it in the google docs and in the ReadMe file.
 On this new dataset : 
 - We deleted the last column because there were only NaN values 
+
+11/03:
+
+Cleansed more the dataset : 
+    - Deleted the stations that weren't functionning 
+    - Deleted every station with no capacity (0)
+    - Added a Heat Map of the density of each station at 3pm
