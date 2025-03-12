@@ -1,4 +1,4 @@
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7";
 console.log("Chargement du script D3.js...");
 // Définir la taille du graphique
 const width = 800, height = 500;
