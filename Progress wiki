@@ -23,3 +23,8 @@ Cleansed more the dataset :
     - Deleted the stations that weren't functionning 
     - Deleted every station with no capacity (0)
     - Added a Heat Map of the density of each station at 3pm
+
+12/03:
+Tried to implement Observable(D3.js) to our project and do the first deployment
+
+Also had a new idea about our dataset, we are going to collect a new data set the same day at different time of the day, then we will merge them to have a dataset with different observations during the same day
