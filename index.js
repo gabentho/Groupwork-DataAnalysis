@@ -1,3 +1,6 @@
+import * as d3 from "d3";
+import { Runtime, Inspector } from "@observablehq/runtime";
+console.log("Observable Runtime is ready");
 console.log("🔄 Chargement du script D3.js...");
 
 // Définir la taille du graphique
