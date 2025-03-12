@@ -4,7 +4,10 @@
   "description": "Project of Enthoven Gabriel, Montacer Yanis and Gaslain Gabriel",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npx http-server",
+    "build": "mkdir -p build && cp -r index.html index.js build/",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "repository": {
     "type": "git",
@@ -21,5 +24,8 @@
     "@observablehq/runtime": "^6.0.0",
     "@observablehq/stdlib": "^5.8.8",
     "d3": "^7.9.0"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
