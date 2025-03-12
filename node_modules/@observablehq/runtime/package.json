@@ -1,0 +1,33 @@
+{
+  "name": "@observablehq/runtime",
+  "version": "6.0.0",
+  "author": {
+    "name": "Observable, Inc.",
+    "url": "https://observablehq.com"
+  },
+  "license": "ISC",
+  "type": "module",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "exports": {
+    "default": "./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/observablehq/runtime.git"
+  },
+  "files": [
+    "src/**/*.js"
+  ],
+  "scripts": {
+    "test": "mocha 'test/**/*-test.js' && eslint src test"
+  },
+  "_moduleAliases": {
+    "@observablehq/runtime": "./src/index.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.27.0",
+    "mocha": "^10.1.0",
+    "module-alias": "^2.2.2"
+  }
+}

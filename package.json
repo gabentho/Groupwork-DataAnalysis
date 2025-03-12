@@ -1,0 +1,25 @@
+{
+  "name": "groupwork-dataanalysis",
+  "version": "1.0.0",
+  "description": "Project of Enthoven Gabriel, Montacer Yanis and Gaslain Gabriel",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabentho/Groupwork-DataAnalysis.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gabentho/Groupwork-DataAnalysis/issues"
+  },
+  "homepage": "https://github.com/gabentho/Groupwork-DataAnalysis#readme",
+  "dependencies": {
+    "@observablehq/runtime": "^6.0.0",
+    "@observablehq/stdlib": "^5.8.8",
+    "d3": "^7.9.0"
+  }
+}
