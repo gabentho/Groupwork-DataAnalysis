@@ -36,4 +36,12 @@ d3.csv("velib-disponibilite-en-temps-reel-11:03.csv").then(data => {
         .attr("fill", "steelblue");
 
     console.log("Visualisation D3.js créée !");
+
+    d3.select("#chart")
+  .append("circle")
+  .attr("cx", 100)
+  .attr("cy", 100)
+  .attr("r", 50)
+  .attr("fill", "red");
 });
+
