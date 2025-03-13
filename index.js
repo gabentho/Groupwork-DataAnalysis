@@ -14,7 +14,7 @@ const svg = d3.select("#chart")
     .style("border", "1px solid black"); // Ajoute une bordure pour voir si le SVG est bien affiché
 
 // Charger les données CSV
-d3.csv("./velib-disponibilite-en-temps-reel-11:03.csv").then(data => {
+d3.csv("velib-disponibilite-en-temps-reel-6h.csv").then(data => {
     console.log("✅ Données chargées :", data);
 
     // Vérifier si les données sont bien lues
