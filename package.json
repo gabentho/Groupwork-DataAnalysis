@@ -5,7 +5,7 @@
   "main": "index.js",
     "scripts": {
       "start": "npx http-server",
-      "build": "mkdir -p build && cp -r index.html index.js build/",
+      "build": "mkdir -p build && cp -r index.html index.js build/ ||true",
       "predeploy": "npm run build",
       "deploy": "gh-pages -d build || true"
     },
