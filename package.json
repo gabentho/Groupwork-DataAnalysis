@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "npx http-server",
-    "build": "mkdir -p build && cp -r index.html index.js build/ || true"
+    "build": "mkdir -p build && cp -r index.html index.js build/ || true",
+    "deploy": "echo 'Deploy skipped intentionally' || true"
   },
   "repository": {
     "type": "git",
