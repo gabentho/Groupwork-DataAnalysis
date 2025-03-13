@@ -38,17 +38,39 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// 🚲 Simulation des données Velib
-const data = [
-    { nom: "Station 1", latitude: 48.8566, longitude: 2.3522, bikes: 10 },
-    { nom: "Station 2", latitude: 48.864716, longitude: 2.349014, bikes: 5 },
-    { nom: "Station 3", latitude: 48.852937, longitude: 2.3364, bikes: 8 },
-];
+// 📂 Vérification du fichier CSV avant chargement
+fetch("data/velib-disponibilite-en-temps-reel-19h.csv")
+    .then(response => {
+        if (!response.ok) throw new Error("Fichier CSV non trouvé !");
+        return response.text();
+    })
+    .then(text => console.log("📂 Fichier CSV trouvé ✅"))
+    .catch(error => console.error("🚨 Erreur : ", error));
 
-data.forEach(d => {
-    L.marker([d.latitude, d.longitude])
-        .addTo(map)
-        .bindPopup(`<b>🚲 ${d.nom}</b><br>🟢 Dispos: ${d.bikes}`);
+// 📂 Chargement des données Velib depuis le CSV
+d3.csv("data/velib-disponibilite-en-temps-reel-19h.csv").then(function(data) {
+    console.log("📊 Données Velib chargées :", data);
+
+    // 🔹 Nettoyage et conversion des données
+    data.forEach(d => {
+        d.latitude = +d.latitude;
+        d.longitude = +d.longitude;
+        d.bikes = +d.bikes;
+    });
+
+    // 🔍 Test rapide : Vérification des données chargées
+    console.log("🔍 Exemple première ligne :", data[0]);
+    alert(`Première station : ${data[0].nom}, 🚲 ${data[0].bikes} vélos`);
+
+    // 📍 Ajout des stations Velib sur la carte
+    data.forEach(d => {
+        L.marker([d.latitude, d.longitude])
+            .addTo(map)
+            .bindPopup(`<b>🚲 ${d.nom}</b><br>🟢 Dispos: ${d.bikes}`);
+    });
+
+}).catch(function(error) {
+    console.error("❌ Erreur de chargement du CSV :", error);
 });
 
 // 🔹 Tooltip pour D3.js
