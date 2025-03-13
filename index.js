@@ -1,17 +1,17 @@
-const d3 = window.d3;
-console.log("✅ Script index.js bien chargé !");
+const d3 = window.d3; // Utilisation correcte dans le navigateur
+console.log("✅ D3.js Version :", d3.version);
 
-// Sélectionne la div #chart et ajoute un SVG
+// Sélection du conteneur SVG
+const width = 800, height = 500;
 const svg = d3.select("#chart")
     .append("svg")
-    .attr("width", 800)
-    .attr("height", 500);
+    .attr("width", width)
+    .attr("height", height)
+    .style("border", "1px solid black");
 
-// Ajoute un cercle pour tester si D3 fonctionne bien
+// Exemple : Ajouter un cercle en test
 svg.append("circle")
-    .attr("cx", 400)
-    .attr("cy", 250)
+    .attr("cx", width / 2)
+    .attr("cy", height / 2)
     .attr("r", 50)
-    .attr("fill", "blue");
-
-console.log("✅ Cercle ajouté au SVG !");
+    .attr("fill", "red");
