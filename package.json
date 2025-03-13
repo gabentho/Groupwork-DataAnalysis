@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "Project of Enthoven Gabriel, Montacer Yanis and Gaslain Gabriel",
   "main": "index.js",
-  "scripts": {
-    "start": "npx http-server",
-    "build": "mkdir -p build && cp -r index.html index.js build/ || true",    "deploy": "gh-pages -d build"
-  },
+    "scripts": {
+      "start": "npx http-server",
+      "build": "mkdir -p build && cp -r index.html index.js build/",
+      "predeploy": "npm run build",
+      "deploy": "gh-pages -d build || true"
+    },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gabentho/Groupwork-DataAnalysis.git"
