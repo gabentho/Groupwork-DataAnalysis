@@ -7,7 +7,7 @@
       "start": "npx http-server",
       "build": "mkdir -p build && cp -r index.html index.js build/ ||true",
       "predeploy": "npm run build",
-      "deploy": "gh-pages -d build || true"
+      "deploy": "git config user.email 'gabriel.enthoven@yahoo.fr' && git config user.name 'Gabriel Enthoven' && gh-pages -d build || true"
     },
   "repository": {
     "type": "git",
