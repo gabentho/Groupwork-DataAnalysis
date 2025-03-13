@@ -4,26 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualisation des données Velib</title>
+    
+    <!-- Liens CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-    <!-- Charger D3.js AVANT index.js -->
+    <!-- Scripts -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script type="module" src="index.js"></script>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        #chart {
-            width: 800px;
-            height: 500px;
-            margin: auto;
-            border: 1px solid black;
-        }
-    </style>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script defer src="index.js"></script>
 </head>
 <body>
     <h1>Visualisation des données Velib</h1>
+    <button id="toggleTheme">🌙 Mode Sombre</button>
+    <div id="map"></div>
     <div id="chart"></div>
 </body>
 </html>
