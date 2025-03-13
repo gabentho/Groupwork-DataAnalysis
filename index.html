@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualisation D3.js</title>
-
+    <title>Visualisation des données Velib</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script defer src="index.js"></script>
     <style>
-        svg {
-            width: 100%;
-            height: 500px;
-            border: 1px solid black;
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
         }
-        circle {
-            fill: steelblue;
+        #chart {
+            width: 800px;
+            height: 500px;
+            margin: auto;
+            border: 1px solid black;
         }
     </style>
 </head>
 <body>
     <h1>Visualisation des données Velib</h1>
-    <svg id="chart"></svg>
-
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script type="text/javascript" src="index.js"></script>
+    <div id="chart"></div>
 </body>
 </html>
