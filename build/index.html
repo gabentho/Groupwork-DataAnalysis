@@ -3,10 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Observable DataViz</title>
+    <title>Visualisation D3.js</title>
+
+    <style>
+        svg {
+            width: 100%;
+            height: 500px;
+            border: 1px solid black;
+        }
+        circle {
+            fill: steelblue;
+        }
+    </style>
 </head>
 <body>
-    <h1>Déploiement Observable réussi !</h1>
-    <script type="module" src="index.js"></script>
+    <h1>Visualisation des données Velib</h1>
+    <svg id="chart"></svg>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script type="text/javascript" src="index.js"></script>
 </body>
 </html>
