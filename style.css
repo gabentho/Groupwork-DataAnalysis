@@ -5,6 +5,7 @@ body {
     color: white;
     text-align: center;
     transition: background 0.5s ease-in-out;
+    padding: 20px;
 }
 
 h1 {
@@ -12,23 +13,38 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* 🎨 Carte Leaflet */
+/* 🎨 Conteneur principal */
+#chart {
+    width: 800px;
+    height: 500px;
+    margin: 20px auto;
+    border: 2px solid white;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* 🌀 Animation cercle */
+@keyframes pulse {
+    0% { transform: scale(1); fill: red; }
+    50% { transform: scale(1.2); fill: orange; }
+    100% { transform: scale(1); fill: red; }
+}
+
+circle {
+    animation: pulse 2s infinite;
+}
+
+/* 🗺️ Carte Leaflet */
 #map {
     width: 80%;
-    height: 500px;
+    height: 400px;
     margin: auto;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* 🔵 Graphique SVG */
-#chart {
-    width: 80%;
-    height: 500px;
-    margin: auto;
-    border-radius: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    background: white;
 }
 
 /* 🌑 Mode sombre */
@@ -37,7 +53,11 @@ h1 {
     color: #f1f1f1;
 }
 
-.dark-mode #map, .dark-mode #chart {
+.dark-mode #chart {
+    border-color: #ffcc00;
+}
+
+.dark-mode #map {
     background: #222;
 }
 
@@ -50,6 +70,7 @@ h1 {
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s ease-in-out;
+    font-size: 16px;
 }
 
 #toggleTheme:hover {

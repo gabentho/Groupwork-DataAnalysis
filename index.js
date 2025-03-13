@@ -1,21 +1,32 @@
+const d3 = window.d3; // Utilisation correcte dans le navigateur
 console.log("✅ D3.js Version :", d3.version);
 
-// 🎨 Initialisation du SVG D3.js
+// 🎨 Création du SVG
 const width = 800, height = 500;
 const svg = d3.select("#chart")
     .append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("border", "1px solid black");
+    .style("border", "1px solid white");
 
-// 🔴 Exemple : Ajouter un cercle en test
-svg.append("circle")
+// 🔴 Ajout d'un cercle animé
+const circle = svg.append("circle")
     .attr("cx", width / 2)
     .attr("cy", height / 2)
     .attr("r", 50)
     .attr("fill", "red");
 
-// 🌙 Mode Sombre
+// 📌 Animation pour bouger le cercle
+function moveCircle() {
+    circle.transition()
+        .duration(2000)
+        .attr("cx", Math.random() * (width - 100) + 50)
+        .attr("cy", Math.random() * (height - 100) + 50)
+        .on("end", moveCircle);
+}
+moveCircle();
+
+// 🎛️ Mode sombre
 document.getElementById("toggleTheme").addEventListener("click", function () {
     document.body.classList.toggle("dark-mode");
 });
@@ -34,7 +45,6 @@ const data = [
     { nom: "Station 3", latitude: 48.852937, longitude: 2.3364, bikes: 8 },
 ];
 
-// 🔵 Ajouter les stations Velib sur la carte
 data.forEach(d => {
     L.marker([d.latitude, d.longitude])
         .addTo(map)
@@ -45,21 +55,7 @@ data.forEach(d => {
 const tooltip = d3.select("body").append("div")
     .attr("class", "tooltip");
 
-// 🔴 Ajouter des cercles animés avec les données Velib
-svg.selectAll("circle")
-    .data(data)
-    .enter()
-    .append("circle")
-    .attr("cx", d => Math.random() * width)  // Placement aléatoire pour tester
-    .attr("cy", d => Math.random() * height)
-    .attr("r", 0) // Commence avec un rayon de 0 pour l'animation
-    .attr("fill", "steelblue")
-    .transition()
-    .duration(1000)
-    .attr("r", 10); // Animation d'apparition
-
-// 🎭 Interaction Tooltip
-svg.selectAll("circle")
+d3.selectAll("circle")
     .on("mouseover", function (event, d) {
         tooltip.style("opacity", 1)
             .html(`🚲 Station: ${d.nom}<br>📍 ${d.latitude}, ${d.longitude}`)
