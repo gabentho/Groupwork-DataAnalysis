@@ -1,6 +1,5 @@
 {
     "install": "npm install",
-    "build": "mkdir -p build && cp  index.html index.js build/",
+    "build": "mkdir -p build && cp index.html index.js build/ || true",
     "output": "build"
   }
-  
