@@ -1,3 +1,4 @@
+const d3 = window.d3;
 console.log("✅ Script index.js bien chargé !");
 
 // Sélectionne la div #chart et ajoute un SVG
