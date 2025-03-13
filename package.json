@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "Project of Enthoven Gabriel, Montacer Yanis and Gaslain Gabriel",
   "main": "index.js",
-    "scripts": {
-      "start": "npx http-server",
-      "build": "mkdir -p build && cp -r index.html index.js build/ ||true",
-      "predeploy": "npm run build",
-      "deploy": "git config user.email 'gabriel.enthoven@yahoo.fr' && git config user.name 'Gabriel Enthoven' && gh-pages -d build || true"
-    },
+  "scripts": {
+    "start": "npx http-server",
+    "build": "mkdir -p build && cp -r index.html index.js build/ || true"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gabentho/Groupwork-DataAnalysis.git"
@@ -20,12 +18,9 @@
     "url": "https://github.com/gabentho/Groupwork-DataAnalysis/issues"
   },
   "homepage": "https://github.com/gabentho/Groupwork-DataAnalysis#readme",
-"dependencies": {
-  "@observablehq/runtime": "^6.0.0",
-  "@observablehq/stdlib": "^5.8.8",
-  "d3": "^7.9.0"
-},
-  "devDependencies": {
-    "gh-pages": "^6.3.0"
+  "dependencies": {
+    "@observablehq/runtime": "^6.0.0",
+    "@observablehq/stdlib": "^5.8.8",
+    "d3": "^7.9.0"
   }
 }

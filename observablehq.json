@@ -3,3 +3,4 @@
     "build": "mkdir -p build && cp -r index.html index.js build/ || true",
     "output": "build"
   }
+  
