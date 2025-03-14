@@ -3,24 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualisation D3.js</title>
+    <title>Visualisation des données Velib</title>
 
-    <style>
-        svg {
-            width: 100%;
-            height: 500px;
-            border: 1px solid black;
-        }
-        circle {
-            fill: steelblue;
-        }
-    </style>
+    <!-- Liens CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- Scripts -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script defer src="index.js"></script>
 </head>
 <body>
     <h1>Visualisation des données Velib</h1>
-    <svg id="chart"></svg>
+    
+    <button id="toggleTheme">🌙 Mode Sombre</button>
+    
+    <div id="map"></div>
 
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script type="text/javascript" src="index.js"></script>
+    <h2>📊 Disponibilité des vélos</h2>
+    <div id="histogram"></div>
+
+    <h2>🏆 Répartition des vélos</h2>
+    <div id="piechart"></div>
+
 </body>
 </html>

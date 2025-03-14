@@ -1,0 +1,138 @@
+/* 🌈 Style général */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    text-align: center;
+    transition: background 0.5s ease-in-out;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 15px;
+}
+
+/* 🎨 Conteneur principal */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 📍 Carte Leaflet */
+#map {
+    width: 100%;
+    max-width: 900px;
+    height: 400px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+}
+
+#map:hover {
+    transform: scale(1.02);
+}
+
+/* 📊 Conteneurs des visualisations */
+#histogram, #piechart {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    margin: 20px auto;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+}
+
+/* 🎨 Animation pour les graphiques */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#histogram, #piechart {
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* 🌀 Animation cercle */
+@keyframes pulse {
+    0% { transform: scale(1); fill: red; }
+    50% { transform: scale(1.2); fill: orange; }
+    100% { transform: scale(1); fill: red; }
+}
+
+circle {
+    animation: pulse 2s infinite;
+}
+
+/* 🌑 Mode sombre */
+.dark-mode {
+    background: linear-gradient(135deg, #121212, #2a2a2a);
+    color: #f1f1f1;
+}
+
+.dark-mode #chart, 
+.dark-mode #histogram, 
+.dark-mode #piechart {
+    border-color: #ffcc00;
+}
+
+.dark-mode #map {
+    background: #222;
+}
+
+/* 🌟 Bouton mode sombre */
+#toggleTheme {
+    margin: 15px;
+    padding: 12px 25px;
+    background: #ffcc00;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#toggleTheme:hover {
+    background: #ff9900;
+    transform: scale(1.05);
+}
+
+/* 📝 Tooltip pour D3.js */
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    #map, #histogram, #piechart {
+        width: 90%;
+        height: 350px;
+    }
+
+    #toggleTheme {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+}

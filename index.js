@@ -1,64 +1,138 @@
-import * as d3 from "d3";
-import { Runtime, Inspector } from "@observablehq/runtime";
-console.log("Observable Runtime is ready");
-console.log("🔄 Chargement du script D3.js...");
+const d3 = window.d3; // Utilisation correcte dans le navigateur
+console.log("✅ D3.js Version :", d3.version);
 
-// Définir la taille du graphique
-const width = 800, height = 500;
+// 🎛️ Mode sombre
+document.getElementById("toggleTheme").addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
+});
 
-// Ajouter un SVG correctement configuré
-const svg = d3.select("#chart")
-    .append("svg")  // Il manquait cette ligne !
-    .attr("width", width)
-    .attr("height", height)
-    .style("border", "1px solid black"); // Ajoute une bordure pour voir si le SVG est bien affiché
+// 🗺️ Carte Leaflet
+const map = L.map('map').setView([48.8566, 2.3522], 12); // Centré sur Paris
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
 
-// Charger les données CSV
-d3.csv("./velib-disponibilite-en-temps-reel-11:03.csv").then(data => {
-    console.log("✅ Données chargées :", data);
+// 📂 Chargement des données Velib depuis le CSV
+d3.csv("Velib.csv").then(function(data) {
+    console.log("📊 Données Velib chargées :", data);
 
-    // Vérifier si les données sont bien lues
-    if (data.length === 0) {
-        console.error("⚠️ Le fichier CSV est vide ou mal chargé !");
-        return;
-    }
+    console.log("🔍 Exemple première ligne après parsing :", data[0]);
+data.forEach(d => {
+    console.log(`Station: ${d["Nom station"]}, Mécaniques: ${d.mechanical}, Électriques: ${d.ebike}, Lat: ${d.latitude}, Long: ${d.longitude}`);
+});
 
-    // Transformer les données
+    // 🔹 Nettoyage et conversion des données
     data.forEach(d => {
-        d.latitude = +d.latitude;   // Convertir en nombre
-        d.longitude = +d.longitude; // Convertir en nombre
+        // Séparer la colonne "Coordonnées géographiques" en latitude et longitude
+        let coords = d["Coordonnées géographiques"].split(",");
+        d.latitude = parseFloat(coords[0]);
+        d.longitude = parseFloat(coords[1]);
+
+        // Convertir les valeurs des vélos en nombres
+        d.mechanical = +d["Vélos mécaniques disponibles"];
+        d.ebike = +d["Vélos électriques disponibles"];
     });
 
-    console.log("🔹 Coordonnées des 5 premières stations :", data.slice(0, 5));
+    // 🔍 Vérifier si toutes les données sont bien converties
+    console.log("🔍 Exemple première ligne :", data[0]);
 
-    // Définir les échelles
-    const xScale = d3.scaleLinear()
-        .domain(d3.extent(data, d => d.longitude))
-        .range([50, width - 50]);
+    // 📍 Ajout des stations Velib sur la carte
+    data.forEach(d => {
+        if (!isNaN(d.latitude) && !isNaN(d.longitude)) {
+            L.marker([d.latitude, d.longitude])
+                .addTo(map)
+                .bindPopup(`<b>🚲 ${d["Nom station"]}</b><br>🔵 Mécaniques : ${d.mechanical}<br>⚡ Électriques : ${d.ebike}`);
+        }
+    });
 
-    const yScale = d3.scaleLinear()
-        .domain(d3.extent(data, d => d.latitude))
-        .range([height - 50, 50]);
+    // 📊 Création de l'histogramme et du graphique circulaire
+    createHistogram(data);
+    createPieChart(data);
 
-    // Ajouter des points pour chaque station
-    svg.selectAll("circle")
+}).catch(function(error) {
+    console.error("❌ Erreur de chargement du CSV :", error);
+});
+
+// 📊 Création d'un histogramme de disponibilité des vélos
+function createHistogram(data) {
+    const margin = { top: 20, right: 30, bottom: 100, left: 60 };
+    const width = 800 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select("#histogram")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    // Création de l'échelle X avec les noms des stations
+    const x = d3.scaleBand()
+        .domain(data.map(d => d["Nom station"]))
+        .range([0, width])
+        .padding(0.2);
+
+    // Échelle Y pour le nombre total de vélos
+    const y = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.mechanical + d.ebike)])
+        .nice()
+        .range([height, 0]);
+
+    // Ajout des barres
+    svg.selectAll(".bar")
         .data(data)
         .enter()
-        .append("circle")
-        .attr("cx", d => {
-            const x = xScale(d.longitude);
-            console.log(`📍 Longitude: ${d.longitude} -> x: ${x}`); // Vérifie les valeurs x
-            return x;
-        })
-        .attr("cy", d => {
-            const y = yScale(d.latitude);
-            console.log(`📍 Latitude: ${d.latitude} -> y: ${y}`); // Vérifie les valeurs y
-            return y;
-        })
-        .attr("r", 5)
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d["Nom station"]))
+        .attr("width", x.bandwidth())
+        .attr("y", d => y(d.mechanical + d.ebike))
+        .attr("height", d => height - y(d.mechanical + d.ebike))
         .attr("fill", "steelblue");
 
-    console.log("🎉 Visualisation D3.js créée !");
-}).catch(error => {
-    console.error("❌ Erreur lors du chargement du CSV :", error);
-});
+    // Ajout des axes
+    svg.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end");
+
+    svg.append("g")
+        .call(d3.axisLeft(y));
+}
+
+// 🏆 Graphique circulaire : Répartition Mécaniques vs Électriques
+function createPieChart(data) {
+    const pieWidth = 400, pieHeight = 400, radius = Math.min(pieWidth, pieHeight) / 2;
+    const pieSvg = d3.select("#piechart")
+        .append("svg")
+        .attr("width", pieWidth)
+        .attr("height", pieHeight)
+        .append("g")
+        .attr("transform", `translate(${pieWidth / 2}, ${pieHeight / 2})`);
+
+    let totalMechanical = d3.sum(data, d => +d.mechanical);
+    let totalElectric = d3.sum(data, d => +d.ebike);
+
+    const pieData = [
+        { type: "Mécaniques", value: totalMechanical },
+        { type: "Électriques", value: totalElectric }
+    ];
+
+    const color = d3.scaleOrdinal()
+        .domain(["Mécaniques", "Électriques"])
+        .range(["#3498db", "#e74c3c"]);
+
+    const pie = d3.pie().value(d => d.value);
+    const arc = d3.arc().innerRadius(50).outerRadius(radius);
+
+    pieSvg.selectAll("path")
+        .data(pie(pieData))
+        .enter()
+        .append("path")
+        .attr("d", arc)
+        .attr("fill", d => color(d.data.type))
+        .attr("stroke", "white")
+        .style("stroke-width", "2px");
+}
