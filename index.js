@@ -1,31 +1,6 @@
 const d3 = window.d3; // Utilisation correcte dans le navigateur
 console.log("✅ D3.js Version :", d3.version);
 
-// 🎨 Création du SVG
-const width = 800, height = 500;
-const svg = d3.select("#chart")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .style("border", "1px solid white");
-
-// 🔴 Ajout d'un cercle animé
-const circle = svg.append("circle")
-    .attr("cx", width / 2)
-    .attr("cy", height / 2)
-    .attr("r", 50)
-    .attr("fill", "red");
-
-// 📌 Animation pour bouger le cercle
-function moveCircle() {
-    circle.transition()
-        .duration(2000)
-        .attr("cx", Math.random() * (width - 100) + 50)
-        .attr("cy", Math.random() * (height - 100) + 50)
-        .on("end", moveCircle);
-}
-moveCircle();
-
 // 🎛️ Mode sombre
 document.getElementById("toggleTheme").addEventListener("click", function () {
     document.body.classList.toggle("dark-mode");
@@ -37,41 +12,33 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// 📂 Vérification du fichier CSV avant chargement
-fetch("Velib.csv")
-    .then(response => {
-        if (!response.ok) throw new Error("Fichier CSV non trouvé !");
-        return response.text();
-    })
-    .then(text => console.log("📂 Fichier CSV trouvé ✅"))
-    .catch(error => console.error("🚨 Erreur : ", error));
-
 // 📂 Chargement des données Velib depuis le CSV
 d3.csv("Velib.csv").then(function(data) {
     console.log("📊 Données Velib chargées :", data);
 
     // 🔹 Nettoyage et conversion des données
     data.forEach(d => {
-        d.latitude = +d.latitude;
-        d.longitude = +d.longitude;
-        d.mechanical = +d.mechanical;
-        d.ebike = +d.ebike;
+        d.latitude = parseFloat(d.latitude);
+        d.longitude = parseFloat(d.longitude);
+        d.mechanical = parseInt(d.mechanical);
+        d.ebike = parseInt(d.ebike);
+        
+        if (isNaN(d.latitude) || isNaN(d.longitude)) {
+            console.warn(`⚠️ Coordonnées invalides pour : ${d.name || d.nom}`, d);
+        }
     });
-
-    // 🔍 Test rapide : Vérification des données chargées
-    console.log("🔍 Exemple première ligne :", data[0]);
 
     // 📍 Ajout des stations Velib sur la carte
     data.forEach(d => {
-        L.marker([d.latitude, d.longitude])
-            .addTo(map)
-            .bindPopup(`<b>🚲 ${d.name}</b><br>🔵 Mécaniques : ${d.mechanical}<br>⚡ Électriques : ${d.ebike}`);
+        if (!isNaN(d.latitude) && !isNaN(d.longitude)) {
+            L.marker([d.latitude, d.longitude])
+                .addTo(map)
+                .bindPopup(`<b>🚲 ${d.name || d.nom}</b><br>🔵 Mécaniques : ${d.mechanical}<br>⚡ Électriques : ${d.ebike}`);
+        }
     });
 
-    // 📊 Histogramme des vélos disponibles
+    // 📊 Histogramme et graphique circulaire
     createHistogram(data);
-
-    // 🏆 Graphique circulaire
     createPieChart(data);
 
 }).catch(function(error) {
