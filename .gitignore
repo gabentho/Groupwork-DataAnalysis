@@ -1,1 +1,4 @@
-velib-disponibilite-en-temps-reel.csv
+node_modules/
+build/
+.DS_Store
+.env

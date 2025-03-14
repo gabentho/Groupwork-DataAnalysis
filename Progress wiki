@@ -22,4 +22,8 @@ On this new dataset :
 Cleansed more the dataset : 
     - Deleted the stations that weren't functionning 
     - Deleted every station with no capacity (0)
-    - Added a Heat Map of the density of each station at 3pm
+
+13/03 : 
+we are dowloading dataset from the same day but at different time of the day to make some different observations with D3.js. our objectives is to merge every dataset at the end to have a bg one with different time of the day 
+
+Nous avons beacoup de mal a bien installer Observable. quand je deploy sur observable je rencontre tout le temps une erreur je n'arrive pas a comprendre.

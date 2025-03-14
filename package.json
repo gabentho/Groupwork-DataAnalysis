@@ -1,0 +1,21 @@
+{
+  "name": "groupwork-dataanalysis",
+  "version": "1.0.0",
+  "description": "Projet de visualisation D3.js - Velib",
+  "main": "index.js",
+  "scripts": {
+    "build": "mkdir -p build && cp -r index.html index.js build/",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabentho/Groupwork-DataAnalysis.git"
+  },
+  "dependencies": {
+    "d3": "^7.9.0"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}

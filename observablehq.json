@@ -1,0 +1,9 @@
+{
+    "name": "Groupwork-DataAnalysis",
+    "version": "1.0.0",
+    "description": "Notebook Observable pour la visualisation Velib",
+    "dependencies": {
+      "@observablehq/runtime": "^6.0.0",
+      "@observablehq/stdlib": "^5.8.8"
+    }
+  }
