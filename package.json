@@ -3,17 +3,17 @@
   "version": "1.0.0",
   "description": "Projet de visualisation D3.js - Velib",
   "main": "index.js",
-  "scripts": {
-    "start": "npx http-server",
-    "build": "mkdir -p build && cp -r index.html index.js build/ || true",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
-  },
+"scripts": {
+  "dev": "observable framework",
+  "build": "observable framework build",
+  "deploy": "observable framework deploy"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gabentho/Groupwork-DataAnalysis.git"
   },
   "dependencies": {
+    "@observablehq/framework": "^1.13.2",
     "@observablehq/runtime": "^6.0.0",
     "@observablehq/stdlib": "^5.8.8",
     "d3": "^7.9.0"
