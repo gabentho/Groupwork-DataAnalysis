@@ -18,26 +18,29 @@ d3.csv("Velib.csv").then(function(data) {
 
     // 🔹 Nettoyage et conversion des données
     data.forEach(d => {
-        d.latitude = parseFloat(d.latitude);
-        d.longitude = parseFloat(d.longitude);
-        d.mechanical = parseInt(d.mechanical);
-        d.ebike = parseInt(d.ebike);
-        
-        if (isNaN(d.latitude) || isNaN(d.longitude)) {
-            console.warn(`⚠️ Coordonnées invalides pour : ${d.name || d.nom}`, d);
-        }
+        // Séparer la colonne "Coordonnées géographiques" en latitude et longitude
+        let coords = d["Coordonnées géographiques"].split(",");
+        d.latitude = parseFloat(coords[0]);
+        d.longitude = parseFloat(coords[1]);
+
+        // Convertir les valeurs des vélos en nombres
+        d.mechanical = +d["Vélos mécaniques disponibles"];
+        d.ebike = +d["Vélos électriques disponibles"];
     });
+
+    // 🔍 Vérifier si toutes les données sont bien converties
+    console.log("🔍 Exemple première ligne :", data[0]);
 
     // 📍 Ajout des stations Velib sur la carte
     data.forEach(d => {
         if (!isNaN(d.latitude) && !isNaN(d.longitude)) {
             L.marker([d.latitude, d.longitude])
                 .addTo(map)
-                .bindPopup(`<b>🚲 ${d.name || d.nom}</b><br>🔵 Mécaniques : ${d.mechanical}<br>⚡ Électriques : ${d.ebike}`);
+                .bindPopup(`<b>🚲 ${d["Nom station"]}</b><br>🔵 Mécaniques : ${d.mechanical}<br>⚡ Électriques : ${d.ebike}`);
         }
     });
 
-    // 📊 Histogramme et graphique circulaire
+    // 📊 Création de l'histogramme et du graphique circulaire
     createHistogram(data);
     createPieChart(data);
 
