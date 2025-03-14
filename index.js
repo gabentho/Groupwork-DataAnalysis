@@ -16,6 +16,11 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 d3.csv("Velib.csv").then(function(data) {
     console.log("📊 Données Velib chargées :", data);
 
+    console.log("🔍 Exemple première ligne après parsing :", data[0]);
+data.forEach(d => {
+    console.log(`Station: ${d["Nom station"]}, Mécaniques: ${d.mechanical}, Électriques: ${d.ebike}, Lat: ${d.latitude}, Long: ${d.longitude}`);
+});
+
     // 🔹 Nettoyage et conversion des données
     data.forEach(d => {
         // Séparer la colonne "Coordonnées géographiques" en latitude et longitude
@@ -50,7 +55,7 @@ d3.csv("Velib.csv").then(function(data) {
 
 // 📊 Création d'un histogramme de disponibilité des vélos
 function createHistogram(data) {
-    const margin = { top: 20, right: 30, bottom: 40, left: 60 };
+    const margin = { top: 20, right: 30, bottom: 100, left: 60 };
     const width = 800 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
@@ -61,34 +66,37 @@ function createHistogram(data) {
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    const x = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.mechanical + d.ebike)])
-        .range([0, width]);
+    // Création de l'échelle X avec les noms des stations
+    const x = d3.scaleBand()
+        .domain(data.map(d => d["Nom station"]))
+        .range([0, width])
+        .padding(0.2);
 
-    const histogram = d3.histogram()
-        .value(d => d.mechanical + d.ebike)
-        .thresholds(x.ticks(20));
-
-    const bins = histogram(data);
-
+    // Échelle Y pour le nombre total de vélos
     const y = d3.scaleLinear()
-        .domain([0, d3.max(bins, d => d.length)])
+        .domain([0, d3.max(data, d => d.mechanical + d.ebike)])
+        .nice()
         .range([height, 0]);
 
-    svg.append("g")
-        .selectAll("rect")
-        .data(bins)
+    // Ajout des barres
+    svg.selectAll(".bar")
+        .data(data)
         .enter()
         .append("rect")
-        .attr("x", d => x(d.x0))
-        .attr("width", d => x(d.x1) - x(d.x0) - 1)
-        .attr("y", d => y(d.length))
-        .attr("height", d => height - y(d.length))
-        .style("fill", "steelblue");
+        .attr("class", "bar")
+        .attr("x", d => x(d["Nom station"]))
+        .attr("width", x.bandwidth())
+        .attr("y", d => y(d.mechanical + d.ebike))
+        .attr("height", d => height - y(d.mechanical + d.ebike))
+        .attr("fill", "steelblue");
 
+    // Ajout des axes
     svg.append("g")
         .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end");
 
     svg.append("g")
         .call(d3.axisLeft(y));
