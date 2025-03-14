@@ -39,7 +39,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // 📂 Vérification du fichier CSV avant chargement
-fetch("data/velib-disponibilite-en-temps-reel-19h.csv")
+fetch("Velib-1303.csv")
     .then(response => {
         if (!response.ok) throw new Error("Fichier CSV non trouvé !");
         return response.text();
@@ -48,7 +48,7 @@ fetch("data/velib-disponibilite-en-temps-reel-19h.csv")
     .catch(error => console.error("🚨 Erreur : ", error));
 
 // 📂 Chargement des données Velib depuis le CSV
-d3.csv("data/velib-disponibilite-en-temps-reel-19h.csv").then(function(data) {
+d3.csv("Velib-1303.csv").then(function(data) {
     console.log("📊 Données Velib chargées :", data);
 
     // 🔹 Nettoyage et conversion des données
