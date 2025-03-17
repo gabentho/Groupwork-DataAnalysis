@@ -2,40 +2,27 @@ const d3 = window.d3; // Utilisation correcte dans le navigateur
 console.log("✅ D3.js Version :", d3.version);
 
 // 📂 Chargement des données Velib depuis le CSV
-d3.csv("Velib.csv").then(function(data) {
+d3.csv("Velib-1303.csv").then(function(data) {
     console.log("📊 Données Velib chargées :", data);
 
     // 🔹 Nettoyage et conversion des données
     data.forEach(d => {
-        d.latitude = +d.latitude;
-        d.longitude = +d.longitude;
-        d.mechanical = +d.mechanical;
-        d.ebike = +d.ebike;
+        d.total = +d["Nombre total vélos disponibles"]; // Nombre total de vélos
     });
 
-    // ✅ Filtrer les valeurs NaN pour éviter les erreurs Leaflet
-    data = data.filter(d => !isNaN(d.latitude) && !isNaN(d.longitude));
+    // ✅ Transformation des données pour le Bubble Chart
+    const velibData = {
+        "name": "Stations Velib",
+        "children": data.map(d => ({
+            "name": d["Nom station"], 
+            "value": d.total 
+        })).filter(d => d.value > 0) // On filtre les stations sans vélos
+    };
 
-    // 🗺️ Carte Leaflet
-    const map = L.map('map').setView([48.8566, 2.3522], 12);
+    console.log("🔵 Données formatées pour le Bubble Chart :", velibData);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    // 📍 Ajout des stations Velib avec icônes et couleurs dynamiques
-    data.forEach(d => {
-        let color = d.mechanical + d.ebike > 10 ? "green" : "red";
-        let icon = L.divIcon({
-            className: 'custom-icon',
-            html: `<div style="background:${color};width:10px;height:10px;border-radius:50%;"></div>`,
-            iconSize: [10, 10]
-        });
-
-        L.marker([d.latitude, d.longitude], { icon: icon })
-            .addTo(map)
-            .bindPopup(`<b>🚲 ${d.name}</b><br>🔵 Mécaniques : ${d.mechanical}<br>⚡ Électriques : ${d.ebike}`);
-    });
+    // 📍 Création du Bubble Chart avec les données transformées
+    document.getElementById("bubblechart").appendChild(createBubbleChart(velibData));
 
     // 📊 Ajout du graphique des vélos disponibles
     createHistogram(data);
@@ -45,87 +32,83 @@ d3.csv("Velib.csv").then(function(data) {
     console.error("❌ Erreur de chargement du CSV :", error);
 });
 
-// 📊 Création d'un histogramme interactif des vélos
-function createHistogram(data) {
-    const margin = { top: 20, right: 30, bottom: 40, left: 60 };
-    const width = 800 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
+// 📌 Fonction Bubble Chart
+function createBubbleChart(data) {
+    const width = 600;
+    const height = width;
 
-    const svg = d3.select("#histogram")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    const color = d3.scaleLinear()
+        .domain([0, 5])
+        .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+        .interpolate(d3.interpolateHcl);
 
-    const x = d3.scaleBand()
-        .domain(data.map(d => d.name))
-        .range([0, width])
-        .padding(0.1);
+    const pack = d3.pack()
+        .size([width, height])
+        .padding(3);
 
-    const y = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.mechanical + d.ebike)])
-        .range([height, 0]);
+    const root = pack(d3.hierarchy(data)
+        .sum(d => d.value)
+        .sort((a, b) => b.value - a.value));
 
-    svg.append("g")
-        .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x).tickFormat(""));
-
-    svg.append("g")
-        .call(d3.axisLeft(y));
-
-    svg.selectAll("rect")
-        .data(data)
-        .enter()
-        .append("rect")
-        .attr("x", d => x(d.name))
-        .attr("y", height)
-        .attr("width", x.bandwidth())
-        .attr("height", 0)
-        .style("fill", "steelblue")
-        .transition()
-        .duration(1000)
-        .attr("y", d => y(d.mechanical + d.ebike))
-        .attr("height", d => height - y(d.mechanical + d.ebike));
-}
-
-// 🏆 Graphique circulaire interactif
-function createPieChart(data) {
-    const width = 400, height = 400, radius = Math.min(width, height) / 2;
-    const svg = d3.select("#piechart")
-        .append("svg")
+    const svg = d3.create("svg")
+        .attr("viewBox", `-${width / 2} -${height / 2} ${width} ${height}`)
         .attr("width", width)
         .attr("height", height)
-        .append("g")
-        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+        .attr("style", `max-width: 100%; height: auto; display: block; margin: 0 auto; background: ${color(0)}; cursor: pointer;`);
 
-    let totalMechanical = d3.sum(data, d => d.mechanical);
-    let totalElectric = d3.sum(data, d => d.ebike);
+    const node = svg.append("g")
+        .selectAll("circle")
+        .data(root.descendants().slice(1))
+        .join("circle")
+        .attr("fill", d => d.children ? color(d.depth) : "white")
+        .attr("pointer-events", d => !d.children ? "none" : null)
+        .on("mouseover", function () { d3.select(this).attr("stroke", "#000"); })
+        .on("mouseout", function () { d3.select(this).attr("stroke", null); })
+        .on("click", (event, d) => focus !== d && (zoom(event, d), event.stopPropagation()));
 
-    const pieData = [
-        { type: "Mécaniques", value: totalMechanical },
-        { type: "Électriques", value: totalElectric }
-    ];
+    const label = svg.append("g")
+        .style("font", "10px sans-serif")
+        .attr("pointer-events", "none")
+        .attr("text-anchor", "middle")
+        .selectAll("text")
+        .data(root.descendants())
+        .join("text")
+        .style("fill-opacity", d => d.parent === root ? 1 : 0)
+        .style("display", d => d.parent === root ? "inline" : "none")
+        .text(d => d.data.name);
 
-    const color = d3.scaleOrdinal()
-        .domain(["Mécaniques", "Électriques"])
-        .range(["#3498db", "#e74c3c"]);
+    svg.on("click", (event) => zoom(event, root));
+    let focus = root;
+    let view;
+    zoomTo([focus.x, focus.y, focus.r * 2]);
 
-    const pie = d3.pie().value(d => d.value);
-    const arc = d3.arc().innerRadius(50).outerRadius(radius);
+    function zoomTo(v) {
+        const k = width / v[2];
 
-    svg.selectAll("path")
-        .data(pie(pieData))
-        .enter()
-        .append("path")
-        .attr("d", arc)
-        .attr("fill", d => color(d.data.type))
-        .attr("stroke", "white")
-        .style("stroke-width", "2px")
-        .transition()
-        .duration(1000)
-        .attrTween("d", function(d) {
-            const interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
-            return function(t) { return arc(interpolate(t)); };
-        });
-}   
+        view = v;
+
+        label.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
+        node.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
+        node.attr("r", d => d.r * k);
+    }
+
+    function zoom(event, d) {
+        focus = d;
+
+        const transition = svg.transition()
+            .duration(event.altKey ? 7500 : 750)
+            .tween("zoom", d => {
+                const i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2]);
+                return t => zoomTo(i(t));
+            });
+
+        label
+            .filter(function (d) { return d.parent === focus || this.style.display === "inline"; })
+            .transition(transition)
+            .style("fill-opacity", d => d.parent === focus ? 1 : 0)
+            .on("start", function (d) { if (d.parent === focus) this.style.display = "inline"; })
+            .on("end", function (d) { if (d.parent !== focus) this.style.display = "none"; });
+    }
+
+    return svg.node();
+}
