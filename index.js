@@ -99,3 +99,72 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
         console.error("Erreur dans la génération du graphique :", error);
     }
 })();
+
+import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
+
+(async function() {
+    try {
+        // 🔹 Charger la carte de Paris (GeoJSON)
+        const parisMap = await d3.json("paris.geojson");
+        console.log("Carte de Paris chargée :", parisMap);
+
+        // 🔹 Charger les données Vélib' (nécessaire dans cette fonction)
+        const rawData = await d3.csv("Velib.csv");
+        console.log("Données Vélib' rechargées :", rawData);
+
+        // 🔹 Dimensions de la carte
+        const widthMap = 975;
+        const heightMap = 610;
+
+        // 🔹 Création du SVG pour la carte
+        const svgMap = d3.create("svg")
+            .attr("width", widthMap)
+            .attr("height", heightMap)
+            .attr("viewBox", [0, 0, widthMap, heightMap])
+            .attr("style", "width: 100%; height: auto; background: lightgray;");
+
+        const path = d3.geoPath();
+
+        // 🔹 Ajouter la carte de Paris en fond (Utilisation directe de GeoJSON)
+        svgMap.append("path")
+            .datum(parisMap)  // ✅ Utilisation directe du GeoJSON
+            .attr("fill", "#ddd")
+            .attr("stroke", "#aaa")
+            .attr("stroke-width", 1)
+            .attr("d", path);
+
+        // 🔹 Ajouter les stations Vélib' en fonction de leur latitude/longitude
+        const scaleSize = d3.scaleLinear()
+            .domain([0, d3.max(rawData, d => +d["Capacité de la station"])])
+            .range([2, 20]); // Taille des spikes
+
+            svgMap.append("g")
+            .attr("fill", "red")
+            .attr("fill-opacity", 0.5)
+            .attr("stroke", "red")
+            .attr("stroke-width", 0.5)
+            .selectAll("path")
+            .data(rawData)
+            .join("path")
+            .attr("transform", d => {
+                const x = +d["Longitude"] || 0;
+                const y = +d["Latitude"] || 0;
+                console.log(`Station: ${d["Nom station"]}, Coordonnées: (${x}, ${y})`);
+                return `translate(${x},${y})`;
+            })
+            .attr("d", d => spike(scaleSize(+d["Capacité de la station"] || 0)))
+            .append("title")
+            .text(d => `${d["Nom station"]} - Capacité: ${d["Capacité de la station"]}`);
+
+        // 🔹 Ajouter la carte dans la page HTML
+        document.getElementById("map-chart").appendChild(svgMap.node());
+
+    } catch (error) {
+        console.error("Erreur lors de l'affichage de la carte de Paris :", error);
+    }
+})();
+
+// ✅ **Fonction pour générer des spikes**
+function spike(length) {
+    return `M0,0V-${length}h5V0z`; // Une ligne verticale de hauteur `length`
+}
