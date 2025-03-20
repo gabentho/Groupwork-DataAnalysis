@@ -43,7 +43,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
             .selectAll("circle")
             .data(rootPacked.descendants().slice(1))
             .join("circle")
-            .attr("fill", d => d.children ? color(d.depth) : "white")
+            .attr("fill", d => d.children ? color(d.depth) : "#111")
             .attr("pointer-events", d => !d.children ? "none" : null)
             .on("mouseover", function() { d3.select(this).attr("stroke", "#000"); })
             .on("mouseout", function() { d3.select(this).attr("stroke", null); })
