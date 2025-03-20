@@ -27,14 +27,14 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
         const color = d3.scaleLinear()
             .domain([0, 5])
-            .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+            .range(["#ff073a", "#9b00ff"]) // Rouge Néon → Violet Électrique
             .interpolate(d3.interpolateHcl);
 
         const svg = d3.create("svg")
             .attr("viewBox", `-${width / 2} -${height / 2} ${width} ${height}`)
             .attr("width", width)
             .attr("height", height)
-            .attr("style", `max-width: 100%; height: auto; display: block; margin: 0 auto; background: ${color(0)}; cursor: pointer;`);
+            .attr("style", `max-width: 100%; height: auto; display: block; margin: 0 -14px; background: #111; cursor: pointer;`); 
 
         const pack = d3.pack().size([width, height]).padding(3);
         const rootPacked = pack(root);
