@@ -100,8 +100,10 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
     }
 })();
 
+
 (async function() {
     try {
+        
         // 🚀 Load the Vélib' dataset
         const rawData = await d3.csv("Velib.csv");
         console.log("Vélib' raw data loaded:", rawData);
@@ -161,7 +163,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
             .attr("y", 30)
             .attr("fill", "black")
             .attr("text-anchor", "end")
-            .text("Heure de la journée");
+            .text("Hour of the day ");
 
         // 🚀 Add Y-axis
         svg.append("g")
@@ -172,7 +174,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
             .attr("y", margin.top - 20)
             .attr("fill", "black")
             .attr("text-anchor", "start")
-            .text("Nombre de vélos disponibles");
+            .text("Amount of bikes available");
 
         // 🚀 Create station lines
         const stationLines = svg.append("g")
@@ -269,6 +271,8 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
                 .attr("cx", d => x(selectedHour))
                 .attr("cy", d => y(d.value ? d.value.availableBikes : 0));
         }
+
+        
 
         // 🚀 Add legend
         const legend = svg.append("g")
