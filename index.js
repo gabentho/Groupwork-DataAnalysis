@@ -100,8 +100,6 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
     }
 })();
 
-
-
 (async function() {
     try {
         // 🚀 Load the Vélib' dataset
@@ -260,7 +258,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
         // 🚀 Update function for slider
         function updatePoints(selectedHour) {
-            sliderLabel.text(`Heure sélectionnée : ${selectedHour}h`);
+            sliderLabel.text(`Hour selected : ${selectedHour}h`);
 
             points.data(stationData.map(d => ({
                 station: d[0],
