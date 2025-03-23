@@ -36,7 +36,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
             .sum(d => d.value || 1)
             .sort((a, b) => b.value - a.value);
  
-        const width = 1000;
+        const width = 928;
         const height = width;
  
         const pack = d3.pack().size([width, height]).padding(3);
@@ -107,7 +107,6 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
                 .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
         }
  
-        // 🔹 Ajoute le graphique à la page HTML
         document.getElementById("chart").appendChild(svg.node());
  
     } catch (error) {
