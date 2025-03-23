@@ -1,4 +1,200 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as topojson from "https://unpkg.com/topojson-client@3?module";
+
+(async function() {
+    try {
+        // Charger les données Vélib
+        const rawData = await d3.csv("Velib.csv", d3.autoType);
+        console.log("Données chargées :", rawData);
+
+        // Charger les données de la carte (France entière)
+        const mapData = await d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/communes.geojson");
+        console.log("Données de la carte :", mapData);
+
+        // Préparer les données des stations Vélib
+        const stationData = rawData.map(d => ({
+            name: d["Nom station"],
+            lat: +d["latitude"],
+            lon: +d["longitude"],
+            hour: +d["hour"],
+            density: +d["Densite de la Station"]
+        }));
+
+        const width = 1300, height = 800;
+
+        // Définir la projection
+        const projection = d3.geoMercator()
+            .center([2.3522, 48.8566])  // Centré sur Paris
+            .scale(150000)
+            .translate([width / 2, height / 2]);
+
+        const path = d3.geoPath().projection(projection);
+
+        // Définir l'échelle de couleur et de taille
+        const color = d => d > 0.7 ? "red" : d > 0.4 ? "orange" : d > 0.1 ? "yellow" : "blue";
+        const radius = d3.scaleSqrt()
+            .domain(d3.extent(stationData, d => d.density))
+            .range([5, 8]);
+
+        // Création du SVG
+        const svg = d3.select("#chart")
+            .append("svg")
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("width", width)
+            .attr("height", height)
+            .on("click", reset);
+
+        const g = svg.append("g");
+
+        // Définition du zoom
+        const zoom = d3.zoom()
+            .scaleExtent([1, 8])
+            .on("zoom", zoomed);
+
+        svg.call(zoom);
+
+        // Ajouter les communes
+        const communes = g.append("g")
+            .selectAll("path")
+            .data(mapData.features)
+            .join("path")
+            .attr("d", path)
+            .attr("fill", "#111")
+            .attr("stroke", "white")
+            .attr("stroke-width", 0.5)
+            .attr("cursor", "pointer")
+            .on("click", clicked);
+
+        communes.append("title")
+            .text(d => d.properties.nom);
+
+        const stations = g.append("g")
+            .selectAll("circle")
+            .data(stationData)
+            .join("circle")
+            .attr("cx", d => projection([d.lon, d.lat])[0])
+            .attr("cy", d => projection([d.lon, d.lat])[1])
+            .attr("r", d => radius(d.density))
+            .attr("fill", d => color(d.density))
+            .attr("stroke", "white")
+            .attr("stroke-width", 0.5)
+            .append("title")
+            .text(d => `${d.name}\nDensité: ${d.density.toFixed(2)}`);
+
+        function clicked(event, d) {
+            const [[x0, y0], [x1, y1]] = path.bounds(d);
+            event.stopPropagation();
+            communes.transition().style("fill", "#111");  
+            d3.select(this).transition().style("fill",  "#111");  
+
+            svg.transition().duration(750).call(
+                zoom.transform,
+                d3.zoomIdentity
+                    .translate(width / 2, height / 2)
+                    .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
+                    .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
+                d3.pointer(event, svg.node())
+            );
+        }
+
+        function reset() {
+            communes.transition().style("fill", "#111");
+            svg.transition().duration(750).call(
+                zoom.transform,
+                d3.zoomIdentity
+            );
+        }
+
+        function zoomed(event) {
+            const { transform } = event;
+            g.attr("transform", transform);
+            g.attr("stroke-width", 1 / transform.k);
+        }
+
+        // Ajouter la légende
+        const legendData = [
+            { color: "red", label: "Densité > 0.7" },
+            { color: "orange", label: "0.4 < Densité ≤ 0.7" },
+            { color: "yellow", label: "0.1 < Densité ≤ 0.4" },
+            { color: "blue", label: "Densité ≤ 0.1" }
+        ];
+
+        const legend = svg.append("g")
+            .attr("transform", `translate(${width - 150}, 20)`);
+
+        legend.selectAll("rect")
+            .data(legendData)
+            .enter()
+            .append("rect")
+            .attr("x", 0)
+            .attr("y", (d, i) => i * 25)
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("fill", d => d.color);
+
+        legend.selectAll("text")
+            .data(legendData)
+            .enter()
+            .append("text")
+            .attr("x", 30)
+            .attr("y", (d, i) => i * 25 + 15)
+            .attr("fill", "white")
+            .attr("font-size", "14px")
+            .text(d => d.label);
+
+        // Ajouter le slider pour filtrer les heures
+        const sliderContainer = d3.select("#slider-container")
+            .style("padding", "10px")
+            .style("background", "#111");
+
+        sliderContainer.append("input")
+            .attr("type", "range")
+            .attr("min", 6)
+            .attr("max", 19)
+            .attr("value", 6)
+            .attr("step", 1)
+            .style("width", "80%")
+            .style("margin", "20px 10%")
+            .on("input", function () {
+                updateCharts(this.value);
+            });
+
+        const sliderLabel = sliderContainer.append("p")
+            .attr("id", "slider-label")
+            .text("Heure sélectionnée : 6h");
+
+        function updateCharts(selectedHour) {
+            sliderLabel.text(`Heure sélectionnée : ${selectedHour}h`);
+
+            // Filtrer les stations correspondant à l'heure sélectionnée
+            const filteredData = stationData.filter(d => d.hour === +selectedHour);
+
+            const circles = g.selectAll("circle")
+                .data(filteredData, d => d.name);
+
+            circles.join(
+                enter => enter.append("circle")
+                    .attr("cx", d => projection([d.lon, d.lat])[0])
+                    .attr("cy", d => projection([d.lon, d.lat])[1])
+                    .attr("r", d => radius(d.density))
+                    .attr("fill", d => color(d.density))
+                    .attr("stroke", "white")
+                    .attr("stroke-width", 0.5)
+                    .append("title")
+                    .text(d => `${d.name}\nDensité: ${d.density.toFixed(2)}`),
+                update => update
+                    .transition().duration(200)
+                    .attr("r", d => radius(d.density))
+                    .attr("fill", d => color(d.density)),
+                exit => exit.remove()
+            );
+        }
+
+    } catch (error) {
+        console.error("Erreur dans la génération du graphique :", error);
+    }
+})();
+
 
 (async function() {
     try {
@@ -36,7 +232,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
             .sum(d => d.value || 1)
             .sort((a, b) => b.value - a.value);
  
-        const width = 928;
+        const width = 800;
         const height = width;
  
         const pack = d3.pack().size([width, height]).padding(3);
@@ -59,7 +255,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
             .join("circle")
             .attr("fill", d => d.children ? color(d.depth) : "#111")
             .attr("pointer-events", d => !d.children ? "none" : null)
-            .on("mouseover", function() { d3.select(this).attr("stroke", "#FF4500"); })
+            .on("mouseover", function() { d3.select(this).attr("stroke", "red"); })
             .on("mouseout", function() { d3.select(this).attr("stroke", null); })
             .on("click", (event, d) => focus !== d && (zoom(event, d), event.stopPropagation()));
  
@@ -116,364 +312,3 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
  
 
 
-// (async function() {
-//     try {
-        
-//         // 🚀 Load the Vélib' dataset
-//         const rawData = await d3.csv("Velib.csv");
-//         console.log("Vélib' raw data loaded:", rawData);
-
-//         // 🚀 Convert hour column to numeric
-//         rawData.forEach(d => {
-//             d.hour = +d["hour"];  
-//             d.availableBikes = +d["Nombre total vélos disponibles"];
-//         });
-
-//         // 🚀 Filter data from 6 AM to 7 PM
-//         const filteredData = rawData.filter(d => d.hour >= 6 && d.hour <= 19);
-
-//         // 🚀 Find the 10 busiest stations (highest variations in bike availability)
-//         const stationVariations = d3.rollups(filteredData, v => d3.deviation(v, d => d.availableBikes), d => d["Nom station"]);
-//         const topStations = new Set(stationVariations.sort((a, b) => d3.descending(a[1], b[1])).slice(0, 10).map(d => d[0]));
-
-//         // 🚀 Group data by station (only the top 10)
-//         const stationData = d3.groups(filteredData.filter(d => topStations.has(d["Nom station"])), d => d["Nom station"]);
-
-//         // 🚀 Set up dimensions
-//         const width = 1000;
-//         const height = 500;
-//         const margin = { top: 30, right: 250, bottom: 50, left: 80 };
-
-//         // 🚀 Set up scales
-//         const x = d3.scaleLinear()
-//             .domain([6, 19]) // Hours of the day
-//             .range([margin.left, width - margin.right]);
-
-//         const y = d3.scaleLinear()
-//             .domain([0, d3.max(filteredData, d => d.availableBikes)]).nice()
-//             .range([height - margin.bottom, margin.top]);
-
-//         // 🚀 Create line generator (smooth curve)
-//         const line = d3.line()
-//             .curve(d3.curveCatmullRom)
-//             .x(d => x(d.hour))
-//             .y(d => y(d.availableBikes));
-
-//         // 🚀 Create SVG
-//         const svg = d3.select("#chart")
-//             .append("svg")
-//             .attr("width", width)
-//             .attr("height", height)
-//             .style("background", "#f9f9f9");
-
-//         // 🚀 Define color scale for different stations
-//         const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-//         // 🚀 Add X-axis
-//         svg.append("g")
-//             .attr("transform", `translate(0,${height - margin.bottom})`)
-//             .call(d3.axisBottom(x).ticks(14).tickFormat(d3.format("02")))
-//             .append("text")
-//             .attr("x", width - margin.right)
-//             .attr("y", 30)
-//             .attr("fill", "black")
-//             .attr("text-anchor", "end")
-//             .text("Hour of the day ");
-
-//         // 🚀 Add Y-axis
-//         svg.append("g")
-//             .attr("transform", `translate(${margin.left},0)`)
-//             .call(d3.axisLeft(y).ticks(6))
-//             .append("text")
-//             .attr("x", -50)
-//             .attr("y", margin.top - 20)
-//             .attr("fill", "black")
-//             .attr("text-anchor", "start")
-//             .text("Amount of bikes available");
-
-//         // 🚀 Create station lines
-//         const stationLines = svg.append("g")
-//             .selectAll("path")
-//             .data(stationData)
-//             .join("path")
-//             .attr("fill", "none")
-//             .attr("stroke", d => color(d[0]))  
-//             .attr("stroke-width", 2)
-//             .attr("d", d => line(d[1]))
-//             .each(function(d) {
-//                 const totalLength = this.getTotalLength();
-
-//                 d3.select(this)
-//                     .attr("stroke-dasharray", `${totalLength},${totalLength}`)
-//                     .attr("stroke-dashoffset", totalLength)
-//                     .transition()
-//                     .delay(500)
-//                     .duration(3000)
-//                     .ease(d3.easeLinear)
-//                     .attr("stroke-dashoffset", 0);
-//             });
-
-//         // 🚀 Create tooltip
-//         const tooltip = d3.select("body").append("div")
-//             .attr("class", "tooltip")
-//             .style("position", "absolute")
-//             .style("background", "rgba(0, 0, 0, 0.75)")
-//             .style("color", "white")
-//             .style("padding", "6px")
-//             .style("border-radius", "4px")
-//             .style("font-size", "12px")
-//             .style("pointer-events", "none")
-//             .style("visibility", "hidden");
-
-//         // 🚀 Create slider
-//         const slider = d3.select("#chart")
-//             .append("input")
-//             .attr("type", "range")
-//             .attr("min", 6)
-//             .attr("max", 19)
-//             .attr("value", 6)
-//             .attr("step", 1)
-//             .style("width", "80%")
-//             .style("margin", "20px 10%")
-//             .on("input", function() {
-//                 updatePoints(+this.value);
-//             });
-
-//         // 🚀 Add selected hour label
-//         const sliderLabel = d3.select("#chart")
-//             .append("h3")
-//             .style("text-align", "center")
-//             .text("Heure sélectionnée : 6h");
-
-//         // 🚀 Create initial points at 6h
-//         const points = svg.append("g")
-//             .selectAll("circle")
-//             .data(stationData.map(d => ({
-//                 station: d[0],
-//                 value: d[1].find(p => p.hour === 6) 
-//             })))
-//             .join("circle")
-//             .attr("fill", d => color(d.station))
-//             .attr("stroke", "white")
-//             .attr("stroke-width", 1)
-//             .attr("r", 5)
-//             .attr("cx", d => x(6))
-//             .attr("cy", d => y(d.value ? d.value.availableBikes : 0))
-//             .on("mouseover", function(event, d) {
-//                 d3.select(this).attr("r", 8);
-//                 tooltip.style("visibility", "visible")
-//                     .html(`<strong>${d.station}</strong><br>Vélos dispo: ${d.value ? d.value.availableBikes : "N/A"}`);
-//             })
-//             .on("mousemove", function(event) {
-//                 tooltip.style("top", (event.pageY - 10) + "px")
-//                     .style("left", (event.pageX + 10) + "px");
-//             })
-//             .on("mouseout", function() {
-//                 d3.select(this).attr("r", 5);
-//                 tooltip.style("visibility", "hidden");
-//             });
-
-//         // 🚀 Update function for slider
-//         function updatePoints(selectedHour) {
-//             sliderLabel.text(`Hour selected : ${selectedHour}h`);
-
-//             points.data(stationData.map(d => ({
-//                 station: d[0],
-//                 value: d[1].find(p => p.hour === selectedHour)
-//             })))
-//                 .transition()
-//                 .duration(500)
-//                 .attr("cx", d => x(selectedHour))
-//                 .attr("cy", d => y(d.value ? d.value.availableBikes : 0));
-//         }
-
-//         document.getElementById("replay-button").addEventListener("click", () => {
-//             stationLines.each(function(d) {
-//                 const totalLength = this.getTotalLength();
-//                 d3.select(this)
-//                     .attr("stroke-dasharray", `${totalLength},${totalLength}`)
-//                     .attr("stroke-dashoffset", totalLength)
-//                     .transition()
-//                     .duration(3000)
-//                     .ease(d3.easeLinear)
-//                     .attr("stroke-dashoffset", 0);
-//             });
-//         });
-
-//         // 🚀 Add legend
-//         const legend = svg.append("g")
-//             .attr("transform", `translate(${width - margin.right + 20},${margin.top})`)
-//             .selectAll("g")
-//             .data(stationData)
-//             .join("g")
-//             .attr("transform", (d, i) => `translate(0,${i * 20})`);
-
-//         legend.append("rect")
-//             .attr("width", 12)
-//             .attr("height", 12)
-//             .attr("fill", d => color(d[0]));
-
-//         legend.append("text")
-//             .attr("x", 16)
-//             .attr("y", 10)
-//             .attr("text-anchor", "start")
-//             .style("font-size", "12px")
-//             .text(d => d[0]);
-
-//     } catch (error) {
-//         console.error("Error generating the graph:", error);
-//     }
-// })();
-
-
-(async function() {
-    try {
-        // 🚀 Load the Vélib' dataset
-        const rawData = await d3.csv("Velib.csv");
-        console.log("Vélib' raw data loaded:", rawData);
-
-        rawData.forEach(d => {
-            d.hour = +d["hour"];
-            d.availableBikes = +d["Nombre total vélos disponibles"];
-        });
-
-        const filteredData = rawData.filter(d => d.hour >= 6 && d.hour <= 19);
-        const stationData = d3.groups(filteredData, d => d["Nom station"]);
-
-        const width = 1000;
-        const height = 500;
-        const margin = { top: 30, right: 250, bottom: 50, left: 80 };
-
-        const x = d3.scaleLinear()
-            .domain([6, 19])
-            .range([margin.left, width - margin.right]);
-
-        const y = d3.scaleLinear()
-            .domain([0, d3.max(filteredData, d => d.availableBikes)]).nice()
-            .range([height - margin.bottom, margin.top]);
-
-        const line = d3.line()
-            .curve(d3.curveCatmullRom)
-            .x(d => x(d.hour))
-            .y(d => y(d.availableBikes));
-
-        const svg = d3.select("#chart")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .style("background", "#f9f9f9");
-
-        const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-        svg.append("g")
-            .attr("transform", `translate(0,${height - margin.bottom})`)
-            .call(d3.axisBottom(x).ticks(14).tickFormat(d3.format("02")))
-            .append("text")
-            .attr("x", width - margin.right)
-            .attr("y", 30)
-            .attr("fill", "black")
-            .attr("text-anchor", "end")
-            .text("Hour of the day");
-
-        svg.append("g")
-            .attr("transform", `translate(${margin.left},0)`)
-            .call(d3.axisLeft(y).ticks(6))
-            .append("text")
-            .attr("x", -50)
-            .attr("y", margin.top - 20)
-            .attr("fill", "black")
-            .attr("text-anchor", "start")
-            .text("Amount of bikes available");
-
-        const stationLines = svg.append("g")
-            .selectAll("path")
-            .data(stationData)
-            .join("path")
-            .attr("fill", "none")
-            .attr("stroke", d => color(d[0]))
-            .attr("stroke-width", 1)
-            .attr("d", d => line(d[1]))
-            .each(function(d) {
-                const totalLength = this.getTotalLength();
-                d3.select(this)
-                    .attr("stroke-dasharray", `${totalLength},${totalLength}`)
-                    .attr("stroke-dashoffset", totalLength)
-                    .transition()
-                    .delay(300)
-                    .duration(3000)
-                    .ease(d3.easeLinear)
-                    .attr("stroke-dashoffset", 0);
-            });
-
-        const tooltip = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("position", "absolute")
-            .style("background", "rgba(0, 0, 0, 0.75)")
-            .style("color", "white")
-            .style("padding", "6px")
-            .style("border-radius", "4px")
-            .style("font-size", "12px")
-            .style("pointer-events", "none")
-            .style("visibility", "hidden");
-
-        const slider = d3.select("#chart")
-            .append("input")
-            .attr("type", "range")
-            .attr("min", 6)
-            .attr("max", 19)
-            .attr("value", 6)
-            .attr("step", 1)
-            .style("width", "80%")
-            .style("margin", "20px 10%")
-            .on("input", function() {
-                updatePoints(+this.value);
-            });
-
-        const sliderLabel = d3.select("#chart")
-            .append("h3")
-            .style("text-align", "center")
-            .text("Selected hour: 6h");
-
-        const points = svg.append("g")
-            .selectAll("circle")
-            .data(stationData.map(d => ({
-                station: d[0],
-                value: d[1].find(p => p.hour === 6)
-            })))
-            .join("circle")
-            .attr("fill", d => color(d.station))
-            .attr("stroke", "white")
-            .attr("stroke-width", 1)
-            .attr("r", 4)
-            .attr("cx", d => x(6))
-            .attr("cy", d => y(d.value ? d.value.availableBikes : 0))
-            .on("mouseover", function(event, d) {
-                d3.select(this).attr("r", 8);
-                tooltip.style("visibility", "visible")
-                    .html(`<strong>${d.station}</strong><br>Bikes available: ${d.value ? d.value.availableBikes : "N/A"}`);
-            })
-            .on("mousemove", function(event) {
-                tooltip.style("top", (event.pageY - 10) + "px")
-                    .style("left", (event.pageX + 10) + "px");
-            })
-            .on("mouseout", function() {
-                d3.select(this).attr("r", 4);
-                tooltip.style("visibility", "hidden");
-            });
-
-        function updatePoints(selectedHour) {
-            sliderLabel.text(`Selected hour: ${selectedHour}h`);
-            points.data(stationData.map(d => ({
-                station: d[0],
-                value: d[1].find(p => p.hour === selectedHour)
-            })))
-                .transition()
-                .duration(500)
-                .attr("cx", d => x(selectedHour))
-                .attr("cy", d => y(d.value ? d.value.availableBikes : 0));
-        }
-
-    } catch (error) {
-        console.error("Error generating the graph:", error);
-    }
-})();
