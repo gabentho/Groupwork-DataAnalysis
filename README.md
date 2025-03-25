@@ -17,6 +17,10 @@ In this project, we analyze bike-sharing data from Paris to identify usage patte
 
 [Look at our progression here](./Progress_wiki)
 
+## Want more precise insights into our project?
+
+[Our scoping document](./Scoping_Document)
+
 ## Crew :
 
 - [Enthoven Gabriel](https://github.com/gabentho)
