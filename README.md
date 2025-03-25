@@ -23,7 +23,7 @@ In this project, we analyze bike-sharing data from Paris to identify usage patte
 
 ## Crew :
 
-- [Enthoven Gabriel](https://github.com/gabentho)
+- [Enthoven Gabriel](https://github.com/gabentho) : 
 - [Montacer Yanis](https://github.com/YanisMtcr)
 - [Gaslain Gabriel](https://github.com/gabgsln)
 
