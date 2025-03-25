@@ -27,6 +27,6 @@ In this project, we analyze bike-sharing data from Paris to identify usage patte
 - [Montacer Yanis](https://github.com/YanisMtcr)
 - [Gaslain Gabriel](https://github.com/gabgsln)
 
-## We used a dataset from the government :
+## We used a dataset from the French government :
 
 [Our dataset](https://transport.data.gouv.fr/datasets/velib-velos-et-bornes-disponibilite-temps-reel)
