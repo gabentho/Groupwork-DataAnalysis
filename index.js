@@ -1,199 +1,262 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import * as topojson from "https://unpkg.com/topojson-client@3?module";
 
-(async function() {
-    try {
-        // Charger les données Vélib
-        const rawData = await d3.csv("Velib.csv", d3.autoType);
-        console.log("Données chargées :", rawData);
 
-        // Charger les données de la carte (France entière)
-        const mapData = await d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/communes.geojson");
-        console.log("Données de la carte :", mapData);
 
-        // Préparer les données des stations Vélib
-        const stationData = rawData.map(d => ({
-            name: d["Nom station"],
-            lat: +d["latitude"],
-            lon: +d["longitude"],
-            hour: +d["hour"],
-            density: +d["Densite de la Station"]
-        }));
 
-        const width = 1300, height = 800;
+(async function () {
+  try {
+    const rawData = await d3.csv("Velib.csv", d3.autoType);
+    console.log("Données chargées :", rawData);
 
-        // Définir la projection
-        const projection = d3.geoMercator()
-            .center([2.3522, 48.8566])  // Centré sur Paris
-            .scale(150000)
-            .translate([width / 2, height / 2]);
+    const mapData = await d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/communes.geojson");
+    console.log("Données de la carte :", mapData);
 
-        const path = d3.geoPath().projection(projection);
+    const stationData = rawData.map(d => ({
+      name: d["Nom station"],
+      lat: +d["latitude"],
+      lon: +d["longitude"],
+      hour: +d["hour"],
+      density: +d["Densite de la Station"],
+      capacity: +d["Capacité de la station"],
+      borb: +d["Nombre bornettes libres"],
+      total: +d["Nombre total vélos disponibles"],
+      menanic: +d["Vélos mécaniques disponibles"],
+      electrics: +d["Vélos électriques disponibles"]
+    }));
 
-        // Définir l'échelle de couleur et de taille
-        const color = d => d > 0.7 ? "red" : d > 0.4 ? "orange" : d > 0.1 ? "yellow" : "blue";
-        const radius = d3.scaleSqrt()
-            .domain(d3.extent(stationData, d => d.density))
-            .range([5, 8]);
+    const width = 1300, height = 800;
 
-        // Création du SVG
-        const svg = d3.select("#chart")
+    const projection = d3.geoMercator()
+      .center([2.3522, 48.8566])
+      .scale(150000)
+      .translate([width / 2, height / 2]);
+
+    const path = d3.geoPath().projection(projection);
+
+    const color = d => d > 0.7 ? "red" : d > 0.4 ? "orange" : d > 0.1 ? "yellow" : "blue";
+    const radius = d3.scaleSqrt()
+      .domain(d3.extent(stationData, d => d.density))
+      .range([4, 7]);
+
+    const svg = d3.select("#chart")
+      .append("svg")
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("width", width)
+      .attr("height", height)
+      .on("click", reset);
+
+    const g = svg.append("g");
+    const zoom = d3.zoom().scaleExtent([1, 8]).on("zoom", zoomed);
+    svg.call(zoom);
+
+    const communes = g.append("g")
+      .selectAll("path")
+      .data(mapData.features)
+      .join("path")
+      .attr("d", path)
+      .attr("fill", "#111")
+      .attr("stroke", "white")
+      .attr("stroke-width", 0.5)
+      .attr("cursor", "pointer")
+      .on("click", clicked);
+
+    const stationLayer = g.append("g").attr("id", "stations");
+
+    function clicked(event, d) {
+      const [[x0, y0], [x1, y1]] = path.bounds(d);
+      event.stopPropagation();
+      svg.transition().duration(750).call(
+        zoom.transform,
+        d3.zoomIdentity
+          .translate(width / 2, height / 2)
+          .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
+          .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
+        d3.pointer(event, svg.node())
+      );
+    }
+
+    function reset() {
+      svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+    }
+
+    function zoomed(event) {
+      const { transform } = event;
+      g.attr("transform", transform);
+      g.attr("stroke-width", 1 / transform.k);
+    }
+
+    const legendData = [
+      { color: "red", label: "Densité > 0.7" },
+      { color: "orange", label: "0.4 < Densité ≤ 0.7" },
+      { color: "yellow", label: "0.1 < Densité ≤ 0.4" },
+      { color: "blue", label: "Densité ≤ 0.1" }
+    ];
+
+    const legend = svg.append("g")
+      .attr("transform", `translate(${width - 150}, 20)`);
+
+    legend.selectAll("rect")
+      .data(legendData)
+      .enter().append("rect")
+      .attr("x", 0)
+      .attr("y", (d, i) => i * 25)
+      .attr("width", 20)
+      .attr("height", 20)
+      .attr("fill", d => d.color);
+
+    legend.selectAll("text")
+      .data(legendData)
+      .enter().append("text")
+      .attr("x", 30)
+      .attr("y", (d, i) => i * 25 + 15)
+      .attr("fill", "white")
+      .attr("font-size", "14px")
+      .text(d => d.label);
+
+    const sliderContainer = d3.select("#slider-container")
+      .style("padding", "10px")
+      .style("background", "#111");
+
+    const heures_a_garder = [6, 7, 9, 10, 11, 13, 12, 14, 15, 16, 17, 18, 19, 0];
+
+    const sliderLabel = sliderContainer.append("p")
+      .attr("id", "slider-label")
+      .style("color", "white")
+      .style("font-size", "16px")
+      .text("Heure sélectionnée : 6h");
+
+    sliderContainer.append("input")
+      .attr("type", "range")
+      .attr("min", 0)
+      .attr("max", heures_a_garder.length - 1)
+      .attr("step", 1)
+      .attr("value", 0)
+      .style("width", "80%")
+      .style("margin", "20px 10%")
+      .on("input", function () {
+        const selectedHour = heures_a_garder[this.value];
+        updateCharts(selectedHour);
+      });
+
+    function updateCharts(selectedHour) {
+      sliderLabel.text(`Heure sélectionnée : ${selectedHour}h`);
+      const filteredData = stationData.filter(d => d.hour === +selectedHour);
+
+      const circles = stationLayer.selectAll("circle")
+        .data(filteredData, d => d.name);
+
+      circles.join(
+        enter => enter.append("circle")
+          .attr("cx", d => projection([d.lon, d.lat])[0])
+          .attr("cy", d => projection([d.lon, d.lat])[1])
+          .attr("r", d => radius(d.density))
+          .attr("fill", d => color(d.density))
+          .attr("stroke", "white")
+          .attr("stroke-width", 0.5)
+          .append("title")
+          .text(d => `${d.name}\nDensité: ${d.density.toFixed(2)}\nCapacité: ${d.capacity}\nBornettes: ${d.borb}\nVélos: ${d.total}\nMécaniques: ${d.menanic}\nElectriques: ${d.electrics}`),
+        update => update.transition().duration(200)
+          .attr("r", d => radius(d.density))
+          .attr("fill", d => color(d.density)),
+        exit => exit.remove()
+      );
+
+      barChartTotal(stationData, selectedHour);
+      barChartTotalEle(stationData, selectedHour);
+    }
+
+    function barChartTotal(data, selectedHour = 6) {
+        const width = 700;
+        const barHeight = 25;
+        const marginTop = 30;
+        const marginRight = 20;
+        const marginBottom = 30;
+        const marginLeft = 200;
+
+        const topStations = data
+            .filter(d => d.hour === selectedHour && d.total > 0)
+            .sort((a, b) => d3.descending(a.total, b.total))
+            .slice(0, 10);
+
+        const height = topStations.length * barHeight + marginTop + marginBottom;
+
+        const x = d3.scaleLinear()
+            .domain([0, d3.max(topStations, d => d.total)])
+            .range([marginLeft, width - marginRight]);
+
+        const y = d3.scaleBand()
+            .domain(topStations.map(d => d.name))
+            .rangeRound([marginTop, height - marginBottom])
+            .padding(0.1);
+
+        d3.select("#barchart").html("");
+
+        const svg = d3.select("#barchart")
             .append("svg")
-            .attr("viewBox", `0 0 ${width} ${height}`)
             .attr("width", width)
             .attr("height", height)
-            .on("click", reset);
+            .attr("viewBox", [0, 0, width, height])
+            .style("background", "#111")
+            .style("color", "white")
+            .style("font", "12px sans-serif");
 
-        const g = svg.append("g");
+        svg.append("g")
+            .selectAll("rect")
+            .data(topStations)
+            .join("rect")
+            .attr("x", x(0))
+            .attr("y", d => y(d.name))
+            .attr("width", d => x(d.menanic) - x(0))
+            .attr("height", y.bandwidth())
+            .attr("fill", "red");
 
-        // Définition du zoom
-        const zoom = d3.zoom()
-            .scaleExtent([1, 8])
-            .on("zoom", zoomed);
+        // Add blue (électriques)
+        svg.append("g")
+            .selectAll("rect")
+            .data(topStations)
+            .join("rect")
+            .attr("x", d => x(d.menanic))
+            .attr("y", d => y(d.name))
+            .attr("width", d => x(d.electrics) - x(0))
+            .attr("height", y.bandwidth())
+            .attr("fill", "blue");
 
-        svg.call(zoom);
-
-        // Ajouter les communes
-        const communes = g.append("g")
-            .selectAll("path")
-            .data(mapData.features)
-            .join("path")
-            .attr("d", path)
-            .attr("fill", "#111")
-            .attr("stroke", "white")
-            .attr("stroke-width", 0.5)
-            .attr("cursor", "pointer")
-            .on("click", clicked);
-
-        communes.append("title")
-            .text(d => d.properties.nom);
-
-        const stations = g.append("g")
-            .selectAll("circle")
-            .data(stationData)
-            .join("circle")
-            .attr("cx", d => projection([d.lon, d.lat])[0])
-            .attr("cy", d => projection([d.lon, d.lat])[1])
-            .attr("r", d => radius(d.density))
-            .attr("fill", d => color(d.density))
-            .attr("stroke", "white")
-            .attr("stroke-width", 0.5)
-            .append("title")
-            .text(d => `${d.name}\nDensité: ${d.density.toFixed(2)}`);
-
-        function clicked(event, d) {
-            const [[x0, y0], [x1, y1]] = path.bounds(d);
-            event.stopPropagation();
-            communes.transition().style("fill", "#111");  
-            d3.select(this).transition().style("fill",  "#111");  
-
-            svg.transition().duration(750).call(
-                zoom.transform,
-                d3.zoomIdentity
-                    .translate(width / 2, height / 2)
-                    .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
-                    .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
-                d3.pointer(event, svg.node())
-            );
-        }
-
-        function reset() {
-            communes.transition().style("fill", "#111");
-            svg.transition().duration(750).call(
-                zoom.transform,
-                d3.zoomIdentity
-            );
-        }
-
-        function zoomed(event) {
-            const { transform } = event;
-            g.attr("transform", transform);
-            g.attr("stroke-width", 1 / transform.k);
-        }
-
-        // Ajouter la légende
-        const legendData = [
-            { color: "red", label: "Densité > 0.7" },
-            { color: "orange", label: "0.4 < Densité ≤ 0.7" },
-            { color: "yellow", label: "0.1 < Densité ≤ 0.4" },
-            { color: "blue", label: "Densité ≤ 0.1" }
-        ];
-
-        const legend = svg.append("g")
-            .attr("transform", `translate(${width - 150}, 20)`);
-
-        legend.selectAll("rect")
-            .data(legendData)
-            .enter()
-            .append("rect")
-            .attr("x", 0)
-            .attr("y", (d, i) => i * 25)
-            .attr("width", 20)
-            .attr("height", 20)
-            .attr("fill", d => d.color);
-
-        legend.selectAll("text")
-            .data(legendData)
-            .enter()
-            .append("text")
-            .attr("x", 30)
-            .attr("y", (d, i) => i * 25 + 15)
+        // Text total
+        svg.append("g")
             .attr("fill", "white")
-            .attr("font-size", "14px")
-            .text(d => d.label);
+            .attr("text-anchor", "end")
+            .selectAll("text")
+            .data(topStations)
+            .join("text")
+            .attr("x", d => x(d.total) - 5)
+            .attr("y", d => y(d.name) + y.bandwidth() / 2)
+            .attr("dy", "0.35em")
+            .text(d => d.total.toFixed(0));
 
-        // Ajouter le slider pour filtrer les heures
-        const sliderContainer = d3.select("#slider-container")
-            .style("padding", "10px")
-            .style("background", "#111");
+        // Y axis (station names)
+        svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select(".domain").remove())
+            .selectAll("text")
+            .attr("fill", "white");
 
-        sliderContainer.append("input")
-            .attr("type", "range")
-            .attr("min", 6)
-            .attr("max", 19)
-            .attr("value", 6)
-            .attr("step", 1)
-            .style("width", "80%")
-            .style("margin", "20px 10%")
-            .on("input", function () {
-                updateCharts(this.value);
-            });
-
-        const sliderLabel = sliderContainer.append("p")
-            .attr("id", "slider-label")
-            .text("Heure sélectionnée : 6h");
-
-        function updateCharts(selectedHour) {
-            sliderLabel.text(`Heure sélectionnée : ${selectedHour}h`);
-
-            // Filtrer les stations correspondant à l'heure sélectionnée
-            const filteredData = stationData.filter(d => d.hour === +selectedHour);
-
-            const circles = g.selectAll("circle")
-                .data(filteredData, d => d.name);
-
-            circles.join(
-                enter => enter.append("circle")
-                    .attr("cx", d => projection([d.lon, d.lat])[0])
-                    .attr("cy", d => projection([d.lon, d.lat])[1])
-                    .attr("r", d => radius(d.density))
-                    .attr("fill", d => color(d.density))
-                    .attr("stroke", "white")
-                    .attr("stroke-width", 0.5)
-                    .append("title")
-                    .text(d => `${d.name}\nDensité: ${d.density.toFixed(2)}`),
-                update => update
-                    .transition().duration(200)
-                    .attr("r", d => radius(d.density))
-                    .attr("fill", d => color(d.density)),
-                exit => exit.remove()
-            );
-        }
-
-    } catch (error) {
-        console.error("Erreur dans la génération du graphique :", error);
-    }
+        // X axis (total)
+        svg.append("g")
+            .attr("transform", `translate(0,${marginTop})`)
+            .call(d3.axisTop(x).ticks(width / 80))
+            .call(g => g.select(".domain").remove())
+            .selectAll("text")
+            .attr("fill", "white");
+            }
+    
+    
+  } catch (error) {
+    console.error("Erreur dans la génération du graphique :", error);
+  }
 })();
+
 
 
 (async function() {
@@ -303,12 +366,10 @@ import * as topojson from "https://unpkg.com/topojson-client@3?module";
                 .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
         }
  
-        document.getElementById("chart").appendChild(svg.node());
+        document.getElementById("rond").appendChild(svg.node());
  
     } catch (error) {
         console.error("Erreur dans la génération du graphique :", error);
     }
 })();
  
-
-
