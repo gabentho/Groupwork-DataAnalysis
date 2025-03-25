@@ -17,7 +17,7 @@ In this project, we analyze bike-sharing data from Paris to identify usage patte
 
 [Look at our progression here](./Progress_wiki)
 
-## Want some more precises insights of our project ? : 
+## Want more precise insights into our project?
 
 [Our scoping document](./Scoping_Document)
 
