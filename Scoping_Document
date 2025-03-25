@@ -1,4 +1,64 @@
 # Welcome on our Scoping Documents :
 
+## Understanding Vélib’ Usage in Paris: Availability, Usage Patterns & Station Performance
+
+First, Velib is a company from the government that allows paris citizen to use electric or normal bikes to move in paris by means of a subscription.
+
+We were three to work on this project : 
+    - Gabriel Enthoven
+    - Yanis Montacer 
+    - Gabriel Gaslain
+
+### Context : 
+
+Vélib’, the public bike-sharing system in Paris, plays a key role in sustainable urban mobility. Understanding how bikes are distributed and used across the city can help improve both the user experience and operational efficiency. This project aims to analyze real-time and historical availability data to reveal usage trends and optimize system performance.
+
+### Objectives : 
+
+### Project Scope:
+
+	•	Analysis of bike availability data within Paris
+	•	Merging and cleaning hourly datasets for time-based analysis
+	•	Data visualizations showing key trends and insights
 
 
+### Dataset & Sources :
+
+Dataset:
+	    Hourly CSV files containing station-level bike availability
+	    Final merged dataset: Velib.csv
+Source:
+	    Open government data from [Click Here](https://transport.data.gouv.fr/datasets/velib-velos-et-bornes-disponibilite-temps-reel)
+
+### Methodology
+Data Collection:
+	•	Gather multiple CSV files captured at different hours of the day
+	•	Merge files into one consistent dataset
+Data Cleaning:
+	•	Handle missing values and inconsistencies
+	•	Format data for time-based analysis
+	•	Exploratory Data Analysis (EDA):
+	•	Compute descriptive statistics
+	•	Identify general trends and irregularities
+Visualization:
+	•	Use heatmaps, bar charts, and line plots
+	•	Highlight station activity and usage over time
+
+
+### Tools & Technologies :
+Language: Python, Java Script, HTML, CSS
+Libraries:
+	pandas for data manipulation
+	matplotlib and seaborn for visualization
+    numpy 
+    geopandas for a map display
+    contextily
+    shapely.geometry
+Environment: Jupyter Notebook
+
+### Deliverables :
+	•	Cleaned and merged dataset (Velib.csv)
+	•	Jupyter Notebook with full data analysis and code
+	•   Full working website made with html,css and javascript deployed from github pages or locally on a server 
+
+If you want more details about our progression you can check the (Progress Wiki)[./Progress_Wiki]
