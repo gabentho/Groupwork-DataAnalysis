@@ -2,7 +2,7 @@
 
 ## Project Description : 
 
-Have you ever wondered where to find an electric Vélib’ in Paris? Or which stations are always full — or always empty?
+Have you ever wondered where to find an electric Vélib’ in Paris ? Or which stations are always full — or always empty ?
 In this project, we analyze bike-sharing data from Paris to identify usage patterns, availability trends, and station performance. With Python and data visualization tools, we turn numbers into insights to better understand urban mobility.
 
 ## Want to follow our journey ? :
