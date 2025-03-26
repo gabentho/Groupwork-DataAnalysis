@@ -12,8 +12,10 @@
 10/03
 	•	Completed a preliminary cleaning of the dataset. Although the dataset was relatively clean upon download, we reviewed and confirmed its structure.
 	•	Decided to switch datasets due to insufficient data volume in the original one.
-	•	Found a new dataset, updated the source in the README file, and made initial edits in Google Sheets:
-	•	Removed the last column, which contained only NaN values.
+	•	Found a new dataset, updated the source in the README file, and made initial edits:
+	    •	Removed the last column, which contained only NaN values.
+        •   Edited some columns that were meaningless like "Capacité de la station" there were almost only zeros in this column
+        • We also added some columns like these ones "hour","arrondissement", "Densité de la station" etc
 
 11/03
 	•	Performed deeper dataset cleaning:
