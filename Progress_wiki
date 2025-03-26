@@ -1,48 +1,58 @@
-22/02 : 
-Created the repository and added a ReadMe file 
-Donwloaded Github desktop and tried to synchronized it 
 
-03/03:
-Added our python and csv files on the repository 
+22/02
+	•	Initialized the GitHub repository and created the README.md file.
+	•	Installed GitHub Desktop and attempted to synchronize local changes with the remote repository.
 
-08/03 :
-Added two new collaborators to the project 
+03/03
+	•	Uploaded our initial Python scripts and the first CSV dataset to the repository.
 
-10/03 :
-Finished to clean the dataset, the dataset was already almost cleaned when we dowloaded it
+08/03
+	•	Added two team members as collaborators on the GitHub project to facilitate teamwork and version control.
 
-We needed to change our dataset as the ancient one was too small 
+10/03
+	•	Completed a preliminary cleaning of the dataset. Although the dataset was relatively clean upon download, we reviewed and confirmed its structure.
+	•	Decided to switch datasets due to insufficient data volume in the original one.
+	•	Found a new dataset, updated the source in the README file, and made initial edits in Google Sheets:
+	•	Removed the last column, which contained only NaN values.
 
-We found a new dataset and edited it in the google docs and in the ReadMe file.
-On this new dataset : 
-- We deleted the last column because there were only NaN values 
+11/03
+	•	Performed deeper dataset cleaning:
+	•	Removed stations that were inactive or non-functional.
+	•	Dropped all stations with a capacity of 0.
 
-11/03:
+13/03
+	•	Collected multiple datasets captured at different times on the same day to enable time-based analysis.
+	•	Our goal was to merge these hourly datasets into a comprehensive one for temporal visualizations using D3.js.
+	•	Faced technical challenges while trying to use Observable to render our visualizations.
 
-Cleansed more the dataset : 
-    - Deleted the stations that weren't functionning 
-    - Deleted every station with no capacity (0)
+14/03
+	•	Successfully merged all time-stamped datasets into a single, clean dataset ready for analysis and visualization.
 
-13/03 : 
-we are dowloading dataset from the same day but at different time of the day to make some different observations with D3.js. our objectives is to merge every dataset at the end to have a bg one with different time of the day 
+15/03
+	•	Wrote and tested new Python scripts to further explore and analyze the merged dataset.
 
-Nous avons beacoup de mal a bien installer Observable. quand je deploy sur observable je rencontre tout le temps une erreur je n'arrive pas a comprendre.
-
-14/03 
-
-Merged the all the dataset into one which is clean 
-
-15/03 
-did some news things on python to better understand our new merged dataset 
+17/03
+	•	Realized that using Observable was not necessary for implementing D3.js visualizations.
+	•	Decided to stop using Observable and focus on deploying our visualizations directly within our web project.
 
 20/03
-We reunited at em lyon makersboard to work on the project and we started using D3.js after having choose which graph we will pick for our data visualisation.
+	•	Held a team work session at the EM Lyon Makersboard.
+	•	Selected the types of D3.js graphs we will use for the project and began implementing them.
 
-21/03 
-Work more on each of our D3.js graph 
+21/03
+	•	Continued development and refinement of each D3.js graph, assigning responsibilities within the team.
 
-22/03 : 
-Added a paris map and every stations. Everything is interactive 
+22/03
+	•	Integrated a map of Paris into the project and plotted all Vélib’ stations on it.
+	•	Made the map fully interactive, allowing users to explore the stations dynamically.
 
-25/03 :
-Worked in class on the project, tried to add a scatterplot
+25/03
+	•	Worked together in class to refine the project.
+	•	Attempted to add a scatterplot to visualize relationships between key variables.
+
+26/03
+    •   Been thinking together to add a last visualisation 
+	•	Began working on the visual design of our website, as planned from the beginning of the project.
+	•	Started writing CSS code to improve the look and feel of the interface.
+
+
