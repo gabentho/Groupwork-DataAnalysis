@@ -19,7 +19,7 @@ In this project, we analyze bike-sharing data from Paris to identify usage patte
 
 ## Want more precise insights into our project?
 
-[Our scoping document](./Scoping_Document)
+[Our scoping document](./Scoping_Document.md)
 
 ## Crew :
 
