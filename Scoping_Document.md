@@ -61,7 +61,7 @@ Data Cleansing & Wrangling:
 	•	Merged hourly datasets into one consolidated CSV
 	•	Handled missing values with Pandas (fillna, drops)
 	•	Removed duplicate rows
-	•	Normalized station names/IDs for consistency
+	•	Normalized station names/IDs for consistency ...
 
 ### Team Organization
 
@@ -70,10 +70,11 @@ Communication & Collaboration:
 	•	Shared development environment using GitHub repository with Github Desktop
 
 Team Roles:
-	•	Gabriel Enthoven – 
-	•	Yanis Montacer – 
-	•	Gabriel Gaslain – 
+	• Gabriel Enthoven – Software Developer
+	• Yanis Montacer – Full Stack Developer
+	• Gabriel Gaslain – Data Analyst
 
 Participation Tracking:
 	•	All members actively contribute to the GitHub repo
 	•	README includes role descriptions for transparency
+	• 	For the design part, we decided together to go on some bright colors that could recall our theme which is above all sustainability

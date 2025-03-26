@@ -23,9 +23,9 @@ In this project, we analyze bike-sharing data from Paris to identify usage patte
 
 ## Crew :
 
-- [Enthoven Gabriel](https://github.com/gabentho) : 
-- [Montacer Yanis](https://github.com/YanisMtcr)
-- [Gaslain Gabriel](https://github.com/gabgsln)
+- [Enthoven Gabriel](https://github.com/gabentho) : Software Developer
+- [Montacer Yanis](https://github.com/YanisMtcr) : Full Stack Developer
+- [Gaslain Gabriel](https://github.com/gabgsln) : Data Analyst
 
 ## We used a dataset from the French government :
 
