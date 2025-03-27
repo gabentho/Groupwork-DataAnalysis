@@ -2,28 +2,136 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title> Data visualisation with D3.js</title>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2"></script>
-    <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
-</head>
-<body>
-    <body style="background-color:#111">
+    <title>Data Visualisation Velib .js</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
         
-    <h1>Welcome to our project</h1>
-    <h2>Chart of every velibs</h2>
-    <div id="rond"></div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+        <script src="https://d3js.org/d3.v6.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.7/jquery.fullpage.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.7/jquery.fullpage.min.js"></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      Papa.parse("Velib.csv", {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        complete: function (results) {
+          const data = results.data;
+  
+          // Nettoyage : filtre les lignes vides
+          const cleanData = data.filter(row => Object.values(row).some(value => value !== null && value !== ""));
+  
+          // Colonnes
+          const columns = Object.keys(cleanData[0]).map(key => ({ title: key }));
+  
+          // Initialisation DataTable
+          $('#velib-table').DataTable({
+            data: cleanData.map(row => Object.values(row)),
+            columns: columns,
+            scrollX: true, 
+            pageLength: 10,
+            searching: false,        // ❌ Supprime la barre de recherche
+            lengthChange: false,
+            language: {
+              url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+            }
+          });
+        }
+      });
+    });
+</script>
+<body>
+
+  <div id="fullpage">
+
+    <!-- PAGE 1 : INTRO -->
+    <div class="section" id="intro">
+      <h1>Welcome to our project !</h1>
+      <h2>Explore the Velib Data in Paris</h2>
+        <div class="btn-wrapper">
+            <a href="https://github.com/gabentho/Groupwork-DataAnalysis" target="_blank" style="text-decoration: none;">
+                <button class="Btn">
+                    <svg class="svgIcon" viewBox="0 0 496 512" height="1.4em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg>
+                    <span class="text">Github</span>
+                    </button>
+              </a>
+        </div>
+    </div>
+    <div class="section centered" id="about">
+        <img src="Vélib’_logo.svg.png" alt="Vélib" class="logo">
+        <div class="content">
+          <h1>About the Project</h1>
+            <p>
+            The goal of this project is to showcase the use of Vélib bikes in the Parisian lifestyle and its surrounding areas
+            through a series of clear and interactive graphs.
+            Vélib is a <span class="highlight">bike-sharing system</span> available throughout Paris and its suburbs,
+            allowing residents and visitors to get around easily in an
+            <span class="highlight">ecological</span> and <span class="highlight">economical</span> way.
+            </p>
+            <p>
+            In this work, we analyze trends, numbers, and habits of the Parisian population when it comes to using bikes. We collected this
+            data to gain a clearer understanding of their usage.
+            </p>
+            <p>
+            With this project, we aimed to offer a visual and accessible way to better understand sustainable mobility in Paris.
+            </p>
+            <p><strong>We wish you a smooth ride through our website. Thanks!</strong></p>
+        </div>
+      </div>
+
+
+    <div class="section" id="data" >
+        <div class="datatable">
+            <h1>Velib Station Data</h1>
+                  <table id="velib-table" class="display" style="width:80%"></table>
+        </div>
+    </div>
 
 
 
-    <div id="Map">    
-        <div id="chart"></div>
-        <div id="slider-container"></div>
-        <div id="barchart"></div> 
-    </div>  
+    <div class="section">
+      <div id="rond"></div>
+    </div>
+
+    <!-- PAGE 3 : CARTE & DASHBOARD -->#DD0E82
+    <div class="section">
+      <div id="chart"></div>
+
+      <div id="overlay">
+        <div id="sidebar">
+          <div id="slider-container"></div>
+          <div id="barchart"></div>
+          <div id="linechart"></div>
+          <div id="barchart1"></div>
+
+          <div id="station-dashboard">
+            <h3 id="station-name"></h3>
+            <svg id="dashboard-chart" width="400" height="180"></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $('#fullpage').fullpage({
+        navigation: true,           // Active les ronds de navigation
+        navigationPosition: 'right' // À droite
+      });
+    });
+    
+  </script>
 
 
+  <script src="index.js" type="module"></script>
 
-    <script src="index.js" type="module"></script>
 </body>
 </html>

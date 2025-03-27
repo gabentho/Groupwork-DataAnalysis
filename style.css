@@ -1,0 +1,220 @@
+body {
+    margin: 0;
+    scroll-behavior: smooth;
+    font-family: 'Inter', sans-serif;
+    padding: 0;
+    height: 100%;
+}
+
+
+.section.centered {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+#intro {
+    text-align: center;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    background-image:  url(blurry_background.png);
+    background-size: cover;
+    background-position: center;
+  }
+  
+  #intro h1 {
+    font-size: 1,3rem;
+    font-weight: 700; /* gras */
+    margin-bottom: 0.7rem;
+    opacity: 0.9;
+  }
+  
+  #intro h2 {
+    font-size: 5rem;
+    font-weight: 1000;
+  }
+
+.Btn {
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition-duration: .4s;
+    cursor: pointer;
+    position: relative;
+    background-color: white;
+    overflow: hidden;
+  }
+  
+  .svgIcon {
+    transition-duration: .3s;
+  }
+  
+  .svgIcon path {
+    fill: #DD0E82;
+    opacity: 0.7;
+  }
+  
+  .text {
+    position: absolute;
+    color: #DD0E82;
+    width: 120px;
+    font-weight: 600;
+    opacity: 0;
+    transition-duration: .4s;
+  }
+  
+  .Btn:hover {
+    width: 110px;
+    transition-duration: .4s;
+    border-radius: 30px;
+  }
+  
+  .Btn:hover .text {
+    opacity: 0.7;
+    transition-duration: .4s;
+  }
+  
+  .Btn:hover .svgIcon {
+    opacity: 0;
+    transition-duration: .3s;
+  }
+  .btn-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+#about {
+    height: 100vh;
+    width: 100%;
+    background-image: url("side-wave_background (3).svg");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+  }
+#about .content {
+    padding: 20px;
+    border-radius: 20px;
+    max-width: 1000px;
+    text-align: left;
+    margin: 0; 
+  }
+#about .fp-tableCell {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+#about h1 {
+    font-size: 2.3rem;
+    font-weight: 800;
+    margin-bottom: 0.7rem;
+    color: #B1B807
+    ;
+}
+#about p {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: rgb(255, 255, 255);
+  }
+.highlight {
+    color:#B1B807; /* Jaune de ta palette */
+    font-weight: bold;
+  }
+#about strong {
+    color: #ffffff;
+  }
+.logo {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    height: 100px; /* tu peux ajuster la taille */
+    z-index: 1000; /* pour qu’il reste au-dessus */
+  }
+  #data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #6794C9;
+    padding: 1rem;
+  }
+  
+  .datatable {
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .datatable h1 {
+    font-size: 0.9rem;
+    color: white;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  #velib-table {
+    width: 100%;
+    font-size: 0.5rem;
+    color: white;
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  
+  #velib-table thead {
+    background-color: transparent;
+    border-bottom: 1px solid white;
+  }
+  
+  #velib-table thead th {
+    padding: 0.4rem;
+    font-weight: 600;
+    text-align: left;
+    color: white;
+    border: none;
+  }
+  
+  #velib-table tbody td {
+    padding: 0.3rem 0.4rem;
+    border: none;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  
+  /* Réduction des composants DataTables */
+  .dataTables_wrapper {
+    max-width: 400px;
+    font-size: 0.6rem;
+    color: white;
+  }
+  
+  .dataTables_length,
+  .dataTables_filter,
+  .dataTables_info,
+  .dataTables_paginate {
+    font-size: 0.6rem;
+    color: white;
+  }
+  
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  
+  .dataTables_wrapper .dataTables_filter input,
+  .dataTables_wrapper .dataTables_length select {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+    max-width: 100px;
+  }
+  
