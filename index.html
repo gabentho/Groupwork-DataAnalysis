@@ -39,7 +39,7 @@
             searching: false,        // ❌ Supprime la barre de recherche
             lengthChange: false,
             language: {
-              url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+            url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
             }
           });
         }
@@ -118,7 +118,19 @@
       </div>
     </div>
 
+<!-- PAGE 5 : Line chart-->
+
+    <div class="section" id="avg-bikes-chart">
+    <div class="content centered">
+      <h2>Moyenne des vélos disponibles par heure et par arrondissement</h2>
+      <div id="linechart-arrondissement"></div>
+
+    </div>
   </div>
+
+  </div>
+
+
 
   <script>
     $(document).ready(function () {

@@ -2,7 +2,10 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import * as topojson from "https://unpkg.com/topojson-client@3?module";
 
 
-
+function animateSlider(duration) {
+  // Fonction vide temporairement pour éviter l'erreur
+  console.log("Animation slider simulée :", duration);
+}
 
 (async function () {
   try {
@@ -680,4 +683,134 @@ import * as topojson from "https://unpkg.com/topojson-client@3?module";
         console.error("Erreur dans la génération du graphique :", error);
     }
 })();
- 
+
+// Chargement et traitement du fichier CSV
+d3.csv("Velib.csv", d3.autoType).then(data => {
+  // 1. Supprimer les lignes "Hors Paris"
+  const filtered = data.filter(d => d.arrondissement !== "Hors Paris");
+
+  // 2. Conversion en entier
+  filtered.forEach(d => {
+    d.arrondissement = +d.arrondissement;
+  });
+
+  // 3. Moyenne de vélos disponibles par heure et arrondissement
+  const grouped = d3.rollups(
+    filtered,
+    v => d3.mean(v, d => d["Nombre total vélos disponibles"]),
+    d => d.hour,
+    d => d.arrondissement
+  );
+
+  // 4. Mise à plat
+  const flatData = [];
+  for (const [hour, arrs] of grouped) {
+    for (const [arrondissement, moyenne] of arrs) {
+      flatData.push({ hour, arrondissement, moyenne });
+    }
+  }
+
+  // 5. Dessiner le graphique
+  drawArrondissementChart(flatData).then(svg => {
+    document.getElementById("linechart-arrondissement").appendChild(svg);
+  });
+});
+
+async function drawArrondissementChart(data) {
+  const width = 928;
+  const height = 600;
+  const marginTop = 20;
+  const marginRight = 20;
+  const marginBottom = 30;
+  const marginLeft = 30;
+
+  const x = d3.scaleLinear()
+    .domain([6, 19])
+    .range([marginLeft, width - marginRight]);
+
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(data, d => d.moyenne)]).nice()
+    .range([height - marginBottom, marginTop]);
+
+  const svg = d3.create("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", [0, 0, width, height])
+    .attr("style", "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif;");
+
+  svg.append("g")
+    .attr("transform", `translate(0,${height - marginBottom})`)
+    .call(d3.axisBottom(x)
+    .tickValues(d3.range(0, 20)) // affiche seulement les heures entières
+    .tickFormat(d => `${d}h`)
+    .tickSizeOuter(0)
+  );
+  svg.append("g")
+    .attr("transform", `translate(${marginLeft},0)`)
+    .call(d3.axisLeft(y))
+    .call(g => g.select(".domain").remove())
+    .call(g => g.selectAll(".tick line").clone()
+      .attr("x2", width - marginLeft - marginRight)
+      .attr("stroke-opacity", 0.1))
+    .call(g => g.append("text")
+      .attr("x", -marginLeft)
+      .attr("y", 10)
+      .attr("fill", "currentColor")
+      .attr("text-anchor", "start")
+      .text("↑ Moyenne vélos dispo."));
+
+  const points = data.map(d => [x(d.hour), y(d.moyenne), d.arrondissement]);
+
+  const groups = d3.rollup(
+    points,
+    v => Object.assign(v.sort((a, b) => a[0] - b[0]), { z: v[0][2] }),
+    d => d[2]
+  );
+  const line = d3.line();
+  const path = svg.append("g")
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 1.5)
+    .attr("stroke-linejoin", "round")
+    .attr("stroke-linecap", "round")
+    .selectAll("path")
+    .data(groups.values())
+    .join("path")
+    .style("mix-blend-mode", "multiply")
+    .attr("d", line);
+
+  const dot = svg.append("g").attr("display", "none");
+  dot.append("circle").attr("r", 2.5);
+  dot.append("text").attr("text-anchor", "middle").attr("y", -8);
+
+  svg
+    .on("pointerenter", pointerentered)
+    .on("pointermove", pointermoved)
+    .on("pointerleave", pointerleft)
+    .on("touchstart", event => event.preventDefault());
+
+  function pointermoved(event) {
+    const [xm, ym] = d3.pointer(event);
+    const i = d3.leastIndex(points, ([x, y]) => Math.hypot(x - xm, y - ym));
+    const [xVal, yVal, arrondissement] = points[i];
+    path.style("stroke", ({ z }) => z === arrondissement ? null : "#ddd")
+        .filter(({ z }) => z === arrondissement).raise();
+    dot.attr("transform", `translate(${xVal},${yVal})`);
+    dot.select("text").text(`Arr. ${arrondissement}`);
+    svg.property("value", data[i]).dispatch("input", { bubbles: true });
+  }
+
+  function pointerentered() {
+    path.style("mix-blend-mode", null).style("stroke", "#ddd");
+    dot.attr("display", null);
+  }
+
+  function pointerleft() {
+    path.style("mix-blend-mode", "multiply").style("stroke", null);
+    dot.attr("display", "none");
+    svg.node().value = null;
+    svg.dispatch("input", { bubbles: true });
+  }
+
+  return svg.node();
+}
