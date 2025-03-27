@@ -11,7 +11,11 @@ In this project, we analyze bike-sharing data from Paris to identify usage patte
   - Why ? : It is one of the most ecological transport in paris.
 - To make some conclusions on our analysis:
   - Which stations are the most crowded, at which time of the day...
-- To understand how Velib's are used throughout the day 
+- To understand how Velib's are used throughout the day
+
+## Want to visit our website ? : 
+
+Website coming soon
 
 ## Want to follow our journey ? :
 
