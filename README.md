@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="./thumbnail.png" width="400">
-</p>
-
 # MobileData-Visualization
 
 ![Teaser](./teaser.png)
