@@ -1,5 +1,7 @@
 # MobileData-Visualization
 
+![Teaser](./teaser.png)
+
 ## Project Description : 
 
 Have you ever wondered where to find an electric Vélib’ in Paris ? Or which stations are always full — or always empty ?
