@@ -10,9 +10,11 @@
 
 10/03
 	•	Completed a preliminary cleaning of the dataset. Although the dataset was relatively clean upon download, we reviewed and confirmed its structure.
-	•	Decided to switch datasets due to insufficient data volume in the original one.
+	Key decison:
+		•	Decided to switch datasets due to insufficient data volume in the original one.
+		•	Removed the last column, which contained only NaN values.
+
 	•	Found a new dataset, updated the source in the README file, and made initial edits:
-	•	Removed the last column, which contained only NaN values.
 	•	Edited some columns that were meaningless, such as “Capacité de la station”, which mostly contained zeros.
 
 11/03
@@ -21,8 +23,10 @@
 	•	Dropped all stations with a capacity of 0.
 
 13/03
-	•	Collected multiple datasets captured at different times on the same day to enable time-based analysis.
-	•	Our goal was to merge these hourly datasets into a comprehensive one for temporal visualizations using D3.js.
+	Big Key decision in our analysis:
+		•	Collected multiple datasets captured at different times on the same day to enable time-based analysis.
+		•	Our goal was to merge these hourly datasets into a comprehensive one for temporal visualizations using D3.js.
+	
 	•	Faced technical challenges while trying to use Observable to render our visualizations.
 
 14/03
@@ -33,12 +37,14 @@
 	•	Wrote and tested new Python scripts to further explore and analyze the merged dataset.
 
 17/03
-	•	Realized that using Observable was not necessary for implementing D3.js visualizations.
-	•	Decided to stop using Observable and focus on deploying our visualizations directly via GitHub Pages.
+	Key decision:
+		•	Realized that using Observable was not necessary for implementing D3.js visualizations.
+		•	Decided to stop using Observable and focus on deploying our visualizations directly via GitHub Pages.
 
 20/03
-	•	Held a team work session at the EM Lyon Makersboard.
-	•	Selected the types of D3.js graphs we would use for the project and began implementing them.
+	Key decision :
+		•	Held a team work session at the EM Lyon Makersboard.
+		•	Selected the types of D3.js graphs we would use for the project and began implementing them.
 
 21/03
 	•	Continued developing and refining each D3.js graph, assigning responsibilities within the team.
@@ -59,9 +65,10 @@
 	•	Attempted to add a scatterplot to visualize relationships between key variables.
 
 26/03
-	•	Brainstormed ideas for a final visualization.
-	•	Started working on the visual design of our website, as planned from the beginning of the project.
-	•	Wrote CSS code to enhance the interface and improve the user experience.
+	Key decision for our website visualisation:
+		•	Brainstormed ideas for a final visualization.
+		•	Started working on the visual design of our website, as planned from the beginning of the project.
+		•	Wrote CSS code to enhance the interface and improve the user experience.
     •   Continue to edit the HTML file 
 
 27/03
@@ -72,3 +79,7 @@
 	•	Continued refining the visual design of our website, focusing on the CSS code.
 	•	Tried to add a favicon working on chrome but not on safari.
 	• 	Added a thumbnail and a teaser image to the repository
+
+29/03
+	•	Still working on the CSS and trying to make the website more fluid.
+
