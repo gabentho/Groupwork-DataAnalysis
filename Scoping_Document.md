@@ -31,8 +31,6 @@ Identify three related projects or visualizations. Explain how they inspire or d
 We took inspiration from existing visualizations such as [MBTA Data Visualizations](http://mbtaviz.github.io/), which demonstrate how urban mobility data can be effectively communicated through simple and clear visuals.  
 However, we also developed many of our own ideas and showed creativity throughout the project, especially in how we merged hourly data and visualized station-level patterns.
 
-We also developed numerous ideas ourselves and demonstrated great creativity throughout the project.
-
 ### Data Sources
 
 Dataset(s):
@@ -75,6 +73,6 @@ Team Roles:
 	• Gabriel Gaslain – Data Analyst
 
 Participation Tracking:
-	•	All members actively contribute to the GitHub repo
+	•	All members actively contribute to the GitHub repository
 	•	README includes role descriptions for transparency
 	• 	For the design part, we decided together to go on some bright colors that could recall our theme which is above all sustainability
