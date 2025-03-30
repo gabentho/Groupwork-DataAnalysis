@@ -765,7 +765,7 @@ d3.csv("Velib.csv", d3.autoType).then(data => {
 });
 
 async function drawArrondissementChart(data) {
-  const width = 700;
+  const width = 650;
   const height = 500;
   const marginTop = 20;
   const marginRight = 20;
@@ -788,32 +788,50 @@ async function drawArrondissementChart(data) {
     .domain([0, d3.max(data, d => d.moyenne)]).nice()
     .range([height - marginBottom, marginTop]);
 
-  const svg = d3.create("svg")
+    const svg = d3.create("svg")
     .attr("width", width)
     .attr("height", height)
     .attr("viewBox", [0, 0, width, height])
-    .attr("style", "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif;");
-
-  svg.append("g")
+    .attr("style", "max-width: 100%; height: auto; overflow: visible; font: 10px 'Inter', sans-serif; color: white;");
+  
+    svg.append("g")
     .attr("transform", `translate(0,${height - marginBottom})`)
-    .call(d3.axisBottom(x)
-    .tickValues(d3.range(0, 20)) // affiche seulement les heures entières
-    .tickFormat(d => `${d}h`)
-    .tickSizeOuter(0)
-  );
-  svg.append("g")
+    .call(g => {
+      g.call(d3.axisBottom(x)
+        .tickValues(d3.range(6, 19))
+        .tickFormat(d => `${d}h`)
+        .tickSizeOuter(0)
+      );
+      g.selectAll("text")
+        .attr("fill", "white")
+        .style("font-family", "Inter");
+      g.selectAll("line")
+        .attr("stroke", "white");
+      g.select(".domain")
+        .attr("stroke", "white");
+    });
+
+    // Axe Y (à gauche)
+    svg.append("g")
     .attr("transform", `translate(${marginLeft},0)`)
-    .call(d3.axisLeft(y))
-    .call(g => g.select(".domain").remove())
-    .call(g => g.selectAll(".tick line").clone()
-      .attr("x2", width - marginLeft - marginRight)
-      .attr("stroke-opacity", 0.1))
-    .call(g => g.append("text")
-      .attr("x", -marginLeft)
-      .attr("y", 10)
-      .attr("fill", "currentColor")
-      .attr("text-anchor", "start")
-      .text("↑ Moyenne vélos dispo."));
+    .call(g => {
+      g.call(d3.axisLeft(y));
+      g.select(".domain").remove();
+      g.selectAll(".tick line").clone()
+        .attr("x2", width - marginLeft - marginRight)
+        .attr("stroke-opacity", 0.1)
+        .attr("stroke", "white");
+      g.append("text")
+        .attr("x", -marginLeft)
+        .attr("y", 10)
+        .attr("fill", "white")
+        .attr("text-anchor", "start")
+        .style("font-family", "Inter")
+        .text("↑ Moyenne vélos dispo.");
+      g.selectAll("text")
+        .attr("fill", "white")
+        .style("font-family", "Inter");
+    });
 
   const points = data.map(d => [x(d.hour), y(d.moyenne), d.arrondissement]);
 
@@ -844,7 +862,7 @@ async function drawArrondissementChart(data) {
     dot.append("text")
         .attr("text-anchor", "middle")
         .attr("y", -12) // un peu plus haut que le rond
-        .style("fill", "#000") // texte noir
+        .style("fill", "#ffffff") // texte noir
         .style("font-size", "12px")
         .style("font-weight", "bold")
         .style("opacity", 1);
@@ -860,7 +878,7 @@ async function drawArrondissementChart(data) {
     const i = d3.leastIndex(points, ([x, y]) => Math.hypot(x - xm, y - ym));
     const [xVal, yVal, arrondissement] = points[i];
     dot.attr("display", null);
-    path.style("stroke", ({ z }) => z === arrondissement ? getColorByArrondissement(z) : "#ddd")
+    path.style("stroke", ({ z }) => z === arrondissement ? getColorByArrondissement(z) : "#333")
         .filter(({ z }) => z === arrondissement).raise();
     dot.attr("transform", `translate(${xVal},${yVal})`);
     dot.select("circle").attr("fill", getColorByArrondissement(arrondissement));
