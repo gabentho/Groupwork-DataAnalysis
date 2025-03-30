@@ -11,8 +11,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
         <script src="https://d3js.org/d3.v6.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.7/jquery.fullpage.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.7/jquery.fullpage.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.7/jquery.fullpage.min.css">
         <link rel="stylesheet" href="style.css">
     </head>
 <script>
@@ -21,22 +21,17 @@
         download: true,
         header: true,
         dynamicTyping: true,
+        info: false, 
         complete: function (results) {
           const data = results.data;
-  
-          // Nettoyage : filtre les lignes vides
           const cleanData = data.filter(row => Object.values(row).some(value => value !== null && value !== ""));
-  
-          // Colonnes
           const columns = Object.keys(cleanData[0]).map(key => ({ title: key }));
-  
-          // Initialisation DataTable
           $('#velib-table').DataTable({
             data: cleanData.map(row => Object.values(row)),
             columns: columns,
             scrollX: true, 
             pageLength: 10,
-            searching: false,        // ❌ Supprime la barre de recherche
+            searching: false,       
             lengthChange: false,
             language: {
             url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
@@ -86,21 +81,56 @@
       </div>
 
 
-    <div class="section" id="data" >
-        <div class="datatable">
-            <h1>Velib Station Data</h1>
-                  <table id="velib-table" class="display" style="width:80%"></table>
+    <div class="section" id="data-P" >
+        <div class="slide" id="data-1">
+          <div class="content">
+            <h1>Explore our DataSet</h1>
+            <p>
+              Our dataset was carefully built to reflect the real-time usage of the <span class="highlight">Vélib’</span> bike-sharing system across Paris and its surrounding areas. We retrieved live data from the official open data platform of the French government:  
+              <a href="https://www.data.gouv.fr/fr/datasets/velib-velos-et-bornes-disponibilite-temps-reel/" target="_blank" class="highlight">data.gouv.fr</a>.
+            </p>
+            <p>
+              The data was collected hourly, from <span class="highlight">9:00 AM to 7:00 PM</span>, on <span class="highlight">Thursday, March 13</span>. After gathering these snapshots, we <span class="highlight">merged</span> them into a single structured dataset. We then carried out a cleaning process and added several helpful columns to enhance the readability and the power of our visualizations.
+            </p>
+            <p>
+              The resulting dataset includes key information such as the <span class="highlight">station name</span>, <span class="highlight">total capacity</span>, the number of <span class="highlight">available bikes</span> (both mechanical and electric), and other live indicators to provide a real-time view of the system's activity across the city.
+            </p>
+            <p>
+              With this prepared dataset, we were able to build <span class="highlight">dynamic visualizations</span> and <span class="highlight">interactive dashboards</span> to better understand urban mobility patterns and the use of bikes in Parisian daily life.
+            </p>
+          </div> 
+        </div>
+        <div class="slide" id ="data">
+          <div class="datatable">
+            <div class="table-container">
+              <table id="velib-table" class="display"></table>
+            </div>
+          </div>
         </div>
     </div>
 
-
-
-    <div class="section">
+    <div class="section" id="station">
+      <div class="content">
+        <h1>Station Overview</h1>
+          <p>
+            The <span class="highlight">Vélib’</span> network includes over <strong>1,400 stations</strong> across Paris and extends into nearly <strong>45 surrounding cities</strong>. With such dense coverage, Vélib offers convenient and sustainable mobility for both daily commuters and occasional riders.
+          </p>
+          <p>
+            The visualization below lets you explore the distribution of all Vélib’ stations. Each <span class="highlight">circle</span> represents a station and is grouped first by <span class="highlight">city</span>, and then by <span class="highlight">arrondissement</span> within Paris.
+          </p>
+          <p>
+            The <span class="highlight">size</span> of each circle reflects the station’s <strong>capacity</strong> — the number of bikes it can accommodate. The larger the circle, the bigger the station.
+          </p>
+          <p>
+            This interactive graph gives you a visual overview of Vélib’s presence throughout the Paris area, highlighting how deeply embedded bike-sharing has become in the urban landscape.
+          </p>
+       </div>
+        
       <div id="rond"></div>
     </div>
 
-    <!-- PAGE 3 : CARTE & DASHBOARD -->#DD0E82
-    <div class="section">
+
+    <div class="section" id="map">
       <div id="chart"></div>
 
       <div id="overlay">
@@ -118,16 +148,28 @@
       </div>
     </div>
 
-<!-- PAGE 5 : Line chart-->
 
-    <div class="section" id="avg-bikes-chart">
-    <div class="content centered">
-      <h2>Moyenne des vélos disponibles par heure et par arrondissement</h2>
-      <div id="linechart-arrondissement"></div>
 
-    </div>
-  </div>
-
+  <div class="section" id="avg-bikes-chart">
+      <div class="content">
+        <h1>Arrondissement Dynamics</h1>  
+        <p>  
+        This visualization highlights the <strong>evolution of average bike availability</strong> throughout the day for each <span class="highlight">Paris arrondissement</span>. The data is grouped by color to reveal <strong>three distinct usage patterns</strong>.  
+        </p>  
+        <p>  
+        <span class="highlight" style="color:#DD0E82">Pink</span> arrondissements — mostly central districts like the 1st to 9th — follow a classic <strong>commuter dynamic</strong>, with a noticeable drop in available bikes around <strong>8–9AM</strong>, followed by a gradual recovery later in the day.  
+        </p>  
+        <p>  
+        <span class="highlight" style="color:#F7B000">Orange</span> zones display a <strong>stable trend</strong>, where bike availability remains relatively constant throughout the day, suggesting local or evenly spread usage.  
+        </p>  
+        <p>  
+        <span class="highlight" style="color:#6793C8">Blue</span> arrondissements — such as the 18th, 19th, and 20th — show a <strong>steady decline</strong> in availability during working hours, reflecting outbound movement as users leave these residential areas in the morning.  
+        </p>  
+        <p>  
+        This graph offers a clear view of <strong>how bike usage behaviors shift</strong> across neighborhoods, revealing the <span class="highlight">diverse rhythms of urban mobility</span> in Paris.  
+        </p>
+       </div>
+       <div id="linechart-arrondissement"></div>
   </div>
 
 
@@ -135,11 +177,13 @@
   <script>
     $(document).ready(function () {
       $('#fullpage').fullpage({
-        navigation: true,           // Active les ronds de navigation
-        navigationPosition: 'right' // À droite
+        navigation: true,
+        navigationPosition: 'right',
+        slidesNavigation: true,
+        slidesNavPosition: 'bottom',
+        controlArrows: false
       });
     });
-    
   </script>
 
 

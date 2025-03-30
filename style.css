@@ -6,6 +6,9 @@ body {
     height: 100%;
 }
 
+body, svg, text {
+  font-family: 'Inter', sans-serif;
+}
 
 .section.centered {
     display: flex !important;
@@ -137,144 +140,335 @@ body {
     height: 100px; /* tu peux ajuster la taille */
     z-index: 1000; /* pour qu’il reste au-dessus */
   }
-  #data {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #6794C9;
-    padding: 1rem;
-  }
-  
-  .datatable {
-    max-width: 400px;
-    width: 100%;
-  }
-  
-  .datatable h1 {
-    font-size: 0.9rem;
-    color: white;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    text-align: center;
-  }
-  
-  #velib-table {
-    width: 100%;
-    font-size: 0.5rem;
-    color: white;
-    background-color: transparent;
-    border-collapse: collapse;
-    border-spacing: 0;
-  }
-  
-  #velib-table thead {
-    background-color: transparent;
-    border-bottom: 1px solid white;
-  }
-  
-  #velib-table thead th {
-    padding: 0.4rem;
-    font-weight: 600;
-    text-align: left;
-    color: white;
-    border: none;
-  }
-  
-  #velib-table tbody td {
-    padding: 0.3rem 0.4rem;
-    border: none;
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-  
-  /* Réduction des composants DataTables */
-  .dataTables_wrapper {
-    max-width: 400px;
-    font-size: 0.6rem;
-    color: white;
-  }
-  
-  .dataTables_length,
-  .dataTables_filter,
-  .dataTables_info,
-  .dataTables_paginate {
-    font-size: 0.6rem;
-    color: white;
-  }
-  
-  .dataTables_wrapper .dataTables_paginate .paginate_button {
-    color: white !important;
-    background: transparent !important;
-    border: none !important;
-  }
-  
-  .dataTables_wrapper .dataTables_filter input,
-  .dataTables_wrapper .dataTables_length select {
-    background: transparent;
-    color: white;
-    border: 1px solid white;
-    font-size: 0.6rem;
-    padding: 0.2rem 0.4rem;
-    max-width: 100px;
-  }
+#data-P .fp-tableCell {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
 
-  #linechart-arrondissement {
-    min-height: 400px;
-  }
-  
-  #avg-bikes-chart {
-    background: linear-gradient(to bottom right, #f4f6f8, #dfe9f3); /* fond clair sobre */
-    color: #1a1a1a;
-    padding: 4rem 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-  
-  #avg-bikes-chart h2 {
-    font-size: 2.5rem;
-    font-weight: 900;
-    margin-bottom: 2rem;
-    color: #202020;
-    text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.4);
-  }
-  
-  #linechart-arrondissement-controls {
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    background-color: #ffffff;
-    padding: 0.7rem 1.2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  
-  #linechart-arrondissement-controls label {
-    font-weight: 600;
-    color: #444;
-    font-size: 1rem;
-  }
-  
-  #linechart-arrondissement-controls select {
-    padding: 0.4rem 0.8rem;
-    font-size: 1rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background-color: #fafafa;
-    color: #222;
-    font-weight: 500;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  #linechart-arrondissement-controls select:hover {
-    background-color: #f0f0f0;
-    cursor: pointer;
-  }
-  
-  #linechart-arrondissement-controls select:focus {
-    outline: none;
-    border-color: #B1B807;
-    box-shadow: 0 0 0 2px rgba(177, 184, 7, 0.2);
-  }
+#data-1 {
+  background-color: #ffffff; /* Jaune clair par exemple */
+}
+#data-1 .highlight {
+  background: linear-gradient(to left, #6793C8, #DD0E82); /* Dégradé de gauche à droite */
+  background-clip: text; 
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+#data-1 .content {
+  padding: 20px;
+  max-width: 1000px;
+  text-align: left;
+  margin: 0; 
+}
+#data-P p {
+  font-size: 18px;
+  font-weight: 800;
+  color: rgb(3, 3, 3);
+}
+#data-P h1 {
+  font-size: 50px;
+  font-weight: 800;
+  margin-bottom: 0.7rem;
+  background: linear-gradient(to left, #6793C8, #DD0E82); /* Dégradé de gauche à droite */
+  background-clip: text; 
+  -webkit-text-fill-color: transparent;
+  ;
+}
+
+#data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: url("blurry_background (1).svg");
+  height: 100vh; /* Prend toute la hauteur de l'écran */
+  width: 100vw;  /* Prend toute la largeur de l'écran */
+  overflow: hidden; /* Évite les débordements */
+  margin: 0;
+  padding: 0;
+}
+/* Fixe les colonnes en hauteur et largeur */
+#velib-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+#velib-table thead,
+#velib-table tbody {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
+#velib-table tbody {
+  display: block;
+  height: 450px; /* Ajuste si tu veux une autre hauteur */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Chaque cellule occupe exactement la même largeur */
+#velib-table thead th,
+#velib-table tbody td {
+  width: 120px; 
+  box-sizing: border-box;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 8px;
+}
+
+
+
+#velib-table thead th {
+  background-color: transparent;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.datatable {
+  width: 100%;
+  max-width: 1300px;
+  overflow-x: auto;
+  padding: 0rem;
+  box-sizing: border-box;
+}
+
+/* TABLEAU */
+#velib-table {
+  width: 100%;
+  font-size: 0.65rem;
+  border-collapse: collapse;
+  background-color: transparent;
+  table-layout: fixed;
+}
+
+
+/* CELLULES */
+#velib-table tbody td {
+  color: white;
+  text-align: center;
+  padding: 18px;
+  border-left: 1px solid white;
+  background-color: transparent;
+}
+
+/* PAGINATION */
+.dataTables_wrapper .dataTables_paginate {
+  margin-top: 1rem;
+  text-align: center;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  color: white !important;
+  background: none !important;
+  border: none !important;
+  margin: 0 5px;
+  font-size: 0.8rem;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  font-weight: bold;
+  color: #B57EB3 !important;
+}
+
+/* Cache recherche & longueur */
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_length {
+  display: none;
+}
+
+/* Fixe l'en-tête et le corps du tableau correctement */
+#velib-table thead,
+#velib-table tbody {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+#velib-table tbody {
+  height: 500px; /* Ajuste cette valeur selon ta préférence */
+  overflow-y: auto;
+  display: block;
+}
+
+/* Évite que les colonnes se décalent */
+#velib-table th,
+#velib-table td {
+  width: 120px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+#velib-table tbody tr:nth-child(odd),
+#velib-table tbody tr:nth-child(even) {
+  background-color: transparent !important;
+}
+
+
+table.dataTable thead th {
+  background-color: transparent !important;
+  color: white !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  padding: 8px !important;
+  font-size: 0.75rem !important;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+table.dataTable thead th.sorting:before,
+table.dataTable thead th.sorting:after,
+table.dataTable thead th.sorting_asc:before,
+table.dataTable thead th.sorting_asc:after,
+table.dataTable thead th.sorting_desc:before,
+table.dataTable thead th.sorting_desc:after {
+  display: none !important;
+}
+
+
+#station {
+  background-color: black;
+}
+.node-label.depth-2 {
+  fill: #F7B000;
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.node-label.depth-1 {
+  fill: white;
+  font-size: 8px;
+}
+
+.node-label.depth-0 {
+  display: none;
+}
+
+#station .fp-tableCell {
+  display: flex; /* Active Flexbox */
+  justify-content: space-between; /* Espace entre les deux éléments */
+  align-items: center; /* Aligne les éléments en haut */
+  gap: 20px; 
+}
+
+#station .content {
+  flex: 1; /* Prend 50% de l'espace disponible */
+  max-width: 50%;
+  text-align: center;
+  display: flex; /* Active Flexbox *//* Centre horizontalement */
+  align-items: center;
+  flex-direction: column;
+  padding-left: 30px; /* Ajoute un espace de 20px à gauche */
+}
+#station h1 {
+  font-size: 2.8rem;
+  font-weight: 1000;
+  margin-bottom: 0.7rem;
+  background: linear-gradient(to right, #F7B000, #DD0E82); /* Dégradé de gauche à droite */
+  -webkit-background-clip: text; 
+  -webkit-text-fill-color: transparent;
+}
+#station p {
+  font-size: 1.0rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+#station .highlight {
+  background: linear-gradient(to right, #F7B000, #DD0E82); /* Dégradé de gauche à droite */
+  background-clip: text; 
+  -webkit-text-fill-color: transparent; /* Rend le texte transparent pour afficher le dégradé */
+  font-weight: bold; /* Optionnel : met le texte en gras */
+}
+
+#rond {
+  padding-right: 50px;
+}
+
+#map {
+  position: relative; /* Position relative pour contenir les éléments enfants */
+  width: 100vw; /* Prend toute la largeur de la fenêtre */
+  height: 100vh; /* Prend toute la hauteur de la fenêtre */
+  overflow: hidden; /* Empêche le débordement */
+}
+
+#chart {
+  position: absolute; /* Position absolue pour remplir le conteneur parent */
+  top: 0;
+  left: 0;
+  width: 100%; /* Prend 100% de la largeur */
+  height: 100%; /* Prend 100% de la hauteur */
+}
+#map::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60vw; /* largeur du dégradé, ajuste si besoin */
+  height: 100%;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.98), transparent);
+  pointer-events: none; /* important : ne bloque pas les clics */
+  z-index: 5;
+}
+#overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 100%;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; 
+  padding-right: 80px;
+  box-sizing: border-box;
+  gap: 20px;
+  background: transparent;
+}
+
+#overlay > * {
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
+}
+#rangeValue {
+  position: relative;
+  display: block;
+  text-align: center;
+  font-size: 6em;
+  color: #999;
+  font-weight: 400;
+}
+
+.range {
+  width: 550px;
+  height: 15px;
+  -webkit-appearance: none;
+  background: #111;
+  outline: none;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 1);
+}
+
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #DD0E82;
+  cursor: pointer;
+  border: 4px solid #333;
+  box-shadow: -407px 0 0 400px #DD0E82;
+}
+#slider-label {
+  position: relative;
+  display: block;
+  text-align: center;
+  font-size: 20px;
+  color: #ffffff;
+  font-weight: 400;
+}
