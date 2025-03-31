@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <link rel="icon" href="favicon_2.png" type="image/png">
+  <link rel="icon" href="Assets/favicon_2.png" type="image/png">
     <meta charset="UTF-8">
     <title>Data Visualisation Velib .js</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -46,7 +46,6 @@
 <body>
   <div id="fullpage">
 
-    <!-- PAGE 1 : INTRO -->
     <div class="section" id="intro">
       <h1>Welcome to our project !</h1>
       <h2>Explore the Velib Data in Paris</h2>
@@ -60,7 +59,7 @@
         </div>
     </div>
     <div class="section centered" id="about">
-        <img src="Vélib’_logo.svg.png" alt="Vélib" class="logo">
+        <img src="Assets/Vélib’_logo.svg.png" alt="Vélib" class="logo">
         <div class="content">
           <h1>About the Project</h1>
             <p>
@@ -81,10 +80,7 @@
               <strong>We wish you a smooth ride through our website. Thanks!</strong>
             </p>
         </div>
-      </div>
-
-        
-
+    </div>
     <div class="section" id="data-P" >
         <div class="slide" id="data-1">
           <div class="content">
@@ -112,7 +108,6 @@
           </div>
         </div>
     </div>
-
     <div class="section" id="station">
       <div class="content">
         <h1>Station Overview</h1>
@@ -131,8 +126,6 @@
        </div>
       <div id="rond"></div>
     </div>
-
-
     <div class="section" id="intro-map">
       <div class="content">
         <h1>Pulse of Paris</h1>
@@ -156,8 +149,6 @@
             </p>
       </div>
     </div>
-
-
     <div class="section" id="map">
       <div id="chart"></div>
 
@@ -175,47 +166,36 @@
         </div>
       </div>
     </div>
-
-
-  <div class="section" id="avg-bikes-chart">
-      <div class="content">
-        <h1>Arrondissement Dynamics</h1>  
-        <p>  
-        This visualization highlights the <strong>evolution of average bike availability</strong> throughout the day for each <span class="highlight">Paris arrondissement</span>. The data is grouped by color to reveal <strong>three distinct usage patterns</strong>.  
-        </p>  
-        <p>  
-        <span class="highlightp" style="color:#DD0E82">Pink</span> arrondissements — mostly central districts like the 1st to 9th — follow a classic <strong>commuter dynamic</strong>, with a noticeable drop in available bikes around <strong>8–9AM</strong>, followed by a gradual recovery later in the day.  
-        </p>  
-        <p>  
-        <span class="highlightp" style="color:#F7B000">Orange</span> zones display a <strong>stable trend</strong>, where bike availability remains relatively constant throughout the day, suggesting local or evenly spread usage.  
-        </p>  
-        <p>  
-        <span class="highlightp" style="color:#6793C8">Blue</span> arrondissements — such as the 18th, 19th, and 20th — show a <strong>steady decline</strong> in availability during working hours, reflecting outbound movement as users leave these residential areas in the morning.  
-        </p>  
-        <p>  
-        This graph offers a clear view of <strong>how bike usage behaviors shift</strong> across neighborhoods, revealing the <span class="highlight">diverse rhythms of urban mobility</span> in Paris.  
-        </p>
-       </div>
-       <div id="linechart-arrondissement"></div>
-  </div>
-  <div class="section" id="intro">
-    <h1>This marks the end of our journey through the Vélib data.  
-      We hope you enjoyed the ride !</h1>
-    <h2>Thanks for Riding With Us </h2>
-      <div class="btn-wrapper">
-          <a href="https://github.com/gabentho/Groupwork-DataAnalysis" target="_blank" style="text-decoration: none;">
-              <button class="Btn">
-                  <svg class="svgIcon" viewBox="0 0 496 512" height="1.4em" xmlns="http://www.w3.org/2000/svg"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg>
-                  <span class="text">Github</span>
-                  </button>
-            </a>
-      </div>
-      <div class="Likedin">
-      </div>
-  </div>
-
-
-
+    <div class="section" id="avg-bikes-chart">
+        <div class="content">
+          <h1>Arrondissement Dynamics</h1>  
+          <p>  
+          This visualization highlights the <strong>evolution of average bike availability</strong> throughout the day for each <span class="highlight">Paris arrondissement</span>. The data is grouped by color to reveal <strong>three distinct usage patterns</strong>.  
+          </p>  
+          <p>  
+          <span class="highlightp" style="color:#DD0E82">Pink</span> arrondissements — mostly central districts like the 1st to 9th — follow a classic <strong>commuter dynamic</strong>, with a noticeable drop in available bikes around <strong>8–9AM</strong>, followed by a gradual recovery later in the day.  
+          </p>  
+          <p>  
+          <span class="highlightp" style="color:#F7B000">Orange</span> zones display a <strong>stable trend</strong>, where bike availability remains relatively constant throughout the day, suggesting local or evenly spread usage.  
+          </p>  
+          <p>  
+          <span class="highlightp" style="color:#6793C8">Blue</span> arrondissements — such as the 18th, 19th, and 20th — show a <strong>steady decline</strong> in availability during working hours, reflecting outbound movement as users leave these residential areas in the morning.  
+          </p>  
+          <p>  
+          This graph offers a clear view of <strong>how bike usage behaviors shift</strong> across neighborhoods, revealing the <span class="highlight">diverse rhythms of urban mobility</span> in Paris.  
+          </p>
+        </div>
+        <div id="linechart-arrondissement"></div>
+    </div>
+    <div class="section" id="Outro">
+      <h2>Thanks for Riding With Us </h2>
+      <h1>
+        Website published on the 1st of April 2025 and maintained by 
+        <a href="https://www.linkedin.com/in/gabriel-gaslain-emsellem-8678652a1/" target="_blank">Gabriel Gaslain</a>, 
+        <a href="https://www.linkedin.com/in/yanis-m-44418b288/" target="_blank">Yanis Montacer</a> and 
+        <a href="https://www.linkedin.com/in/gabriel-enthoven/" target="_blank">Gabriel Ethoven</a>
+      </h1>
+    </div>
   <script>
     $(document).ready(function () {
       $('#fullpage').fullpage({
@@ -229,9 +209,9 @@
       });
     });
   </script>
-
-
   <script src="index.js" type="module"></script>
-
 </body>
 </html>
+
+
+

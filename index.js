@@ -1,7 +1,6 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 function animateSlider(duration) {
-  // Fonction vide temporairement pour éviter l'erreur
   console.log("Animation slider simulée :", duration);
 }
 
@@ -82,23 +81,20 @@ function animateSlider(duration) {
 
     function reset() {
       selectedStationName = null;
-    
-      // ✅ Réaffiche le graph total immédiatement
+      syncSliderToHour(currentHour);
       d3.select("#barchart").style("display", "block").html("");
       barChartTotal(stationData, currentHour);
+
     
-      // ✅ Cache les autres
       d3.select("#linechart").html("").style("display", "none");
       d3.select("#station-dashboard").style("display", "none");
       d3.select("#barchart1").style("display", "none");
     
-      // ✅ Réaffiche tous les points
       stationLayer.selectAll("circle")
         .transition()
         .duration(500)
         .style("opacity", 1);
     
-      // ✅ Recentrer la carte
       svg.transition()
         .duration(750)
         .call(zoom.transform, d3.zoomIdentity)
@@ -118,14 +114,14 @@ function animateSlider(duration) {
     }
   
     const legendData = [
-      { color: "#DD0E82", label: "Densité > 0.7" },
-      { color: "#B57EB3", label: "0.4 < Densité ≤ 0.7" },
-      { color: "#F7B000", label: "0.1 < Densité ≤ 0.4" },
-      { color: "#6793C8", label: "Densité ≤ 0.1" }
+      { color: "#DD0E82", label: "Density > 0.7" },
+      { color: "#B57EB3", label: "0.4 < Density ≤ 0.7" },
+      { color: "#F7B000", label: "0.1 < Density ≤ 0.4" },
+      { color: "#6793C8", label: "Density ≤ 0.1" }
     ];
 
     const legend = svg.append("g")
-      .attr("transform", `translate(20, 20)`); // Haut à gauche avec un peu de marge
+      .attr("transform", `translate(20, 20)`); 
 
     legend.selectAll("rect")
       .data(legendData)
@@ -165,7 +161,7 @@ function animateSlider(duration) {
       .style("width", "400px")
       .style("margin", "20px 10%")
       .on("input", function () {
-        currentHour = heures_a_garder[this.value]; // mettre à jour la variable globale
+        currentHour = heures_a_garder[this.value]; 
         updateCharts(currentHour);
       });
 
@@ -212,8 +208,7 @@ function animateSlider(duration) {
               .attr("font-weight", "bold");
       
             selectedStationName = name;
-      
-            // 👉 Affiche directement les bons graphiques après clic
+            syncSliderToHour(currentHour);
             createLineChart(name);
             updateStationDashboard(name, selectedHour);
             d3.select("#linechart").style("display", "block");
@@ -250,6 +245,7 @@ function animateSlider(duration) {
               selectedStationName = d.name;
               zoomToStation([d.lon, d.lat], 50, d.name, selectedHour);
               animateSlider(14000);
+              syncSliderToHour(currentHour);
               updateCharts(selectedHour); 
             })
             .on("dblclick", reset)
@@ -262,10 +258,8 @@ function animateSlider(duration) {
         );
       
         if (selectedStationName) {
-          // Cacher le barchart total
           d3.select("#barchart").style("display", "none");
       
-          // Montrer les autres
           d3.select("#linechart").style("display", "block");
           d3.select("#barchart1").style("display", "block");
           d3.select("#station-dashboard").style("display", "block");
@@ -273,10 +267,8 @@ function animateSlider(duration) {
           createLineChart(selectedStationName);
           updateStationDashboard(selectedStationName, selectedHour);
         } else {
-          // Aucun station sélectionnée → On affiche le graphique total
           d3.select("#barchart").style("display", "block");
       
-          // Cacher les autres
           d3.select("#linechart").style("display", "none");
           d3.select("#barchart1").style("display", "none");
           d3.select("#station-dashboard").style("display", "none");
@@ -284,6 +276,11 @@ function animateSlider(duration) {
           barChartTotal(stationData, selectedHour);
         }
       }
+    function syncSliderToHour(hour) {
+        const index = heures_a_garder.indexOf(hour);
+        d3.select("input.range").property("value", index);
+        sliderLabel.text(`${hour}h`);
+    }
 
     function barChartTotal(data, selectedHour = 6) {
         const width = 550;
@@ -330,7 +327,6 @@ function animateSlider(duration) {
             .attr("height", y.bandwidth())
             .attr("fill", "#6793C8");
 
-        // Add blue (électriques)
         svg.append("g")
             .selectAll("rect")
             .data(topStations)
@@ -342,7 +338,6 @@ function animateSlider(duration) {
             .attr("fill", "#DD0E82");
             
 
-        // Text total
         svg.append("g")
             .attr("fill", "white")
             .attr("text-anchor", "end")
@@ -355,7 +350,6 @@ function animateSlider(duration) {
             .text(d => d.total.toFixed(0))
     
 
-        // Y axis (station names)
         svg.append("g")
             .attr("transform", `translate(${marginLeft},0)`)
             .call(d3.axisLeft(y))
@@ -377,7 +371,6 @@ function animateSlider(duration) {
             })
             ;
 
-        // X axis (total)
         svg.append("g")
             .attr("transform", `translate(0,${marginTop})`)
             .call(d3.axisTop(x).ticks(width / 80))
@@ -388,8 +381,8 @@ function animateSlider(duration) {
             .attr("transform", `translate(${width - 160}, ${height - 40})`);
         
           const legendItems = [
-            { label: "Vélos mécaniques", color: "#DD0E82" },
-            { label: "Vélos électriques", color: "#6793C8" }
+            { label: "Mechanical bike", color: "#DD0E82" },
+            { label: "Electric bike", color: "#6793C8" }
           ];
         
           legend.selectAll("rect")
@@ -415,10 +408,10 @@ function animateSlider(duration) {
         
     
     function createLineChart(stationName) {
-              // Filtrer les données pour la station sélectionnée
+
               const stationHistory = stationData
                 .filter(d => d.name === stationName && d.total > 0)
-                .sort((a, b) => a.hour - b.hour); // trier par heure croissante
+                .sort((a, b) => a.hour - b.hour); 
             
               if (stationHistory.length === 0) return;
             
@@ -447,7 +440,6 @@ function animateSlider(duration) {
                 .y(d => y(d.total))
                 .curve(d3.curveMonotoneX);
             
-              // Ajouter le chemin principal en gris pour la ligne
               svg.append("path")
                 .datum(stationHistory)
                 .attr("fill", "none")
@@ -455,7 +447,7 @@ function animateSlider(duration) {
                 .attr("stroke-width", 1.5)
                 .attr("d", line);
             
-              // Ajouter les points colorés
+
               svg.selectAll("circle")
                 .data(stationHistory)
                 .join("circle")
@@ -471,7 +463,6 @@ function animateSlider(duration) {
                 .append("title")
                 .text(d => `Heure: ${d.hour}h\nVélos: ${d.total}\nDensité: ${d.density.toFixed(2)}`);
             
-              // Axe X
               svg.append("g")
                 .attr("transform", `translate(0,${height - margin.bottom})`)
                 .call(d3.axisBottom(x)
@@ -480,46 +471,42 @@ function animateSlider(duration) {
                 .selectAll("text")
                 .attr("fill", "white");
             
-              // Axe Y
               svg.append("g")
                 .attr("transform", `translate(${margin.left},0)`)
                 .call(d3.axisLeft(y))
                 .selectAll("text")
                 .attr("fill", "white");
             
-              // Titre
               svg.append("text")
                 .attr("x", width / 2)
                 .attr("y", margin.top - 10)
                 .attr("text-anchor", "middle")
                 .attr("fill", "white")
                 .attr("font-size", "16px")
-                .text(`Évolution des vélos à "${stationName}"`);
+                .text(`Bike availability over time at "${stationName}"`);
             }
 
-    // Fonction pour mettre à jour le mini-dashboard d'une station
   function updateStationDashboard(stationName, selectedHour) {
     const stationInfo = stationData.find(d => d.name === stationName && d.hour === selectedHour);
 
-    // Afficher la div dashboard si elle était cachée
     d3.select("#station-dashboard")
       .style("display", stationInfo ? "block" : "none");
 
     if (!stationInfo) return;
 
-    // Mettre à jour le titre
+
     d3.select("#station-name").text(`Station : ${stationInfo.name} à ${selectedHour}h`);
 
     const metrics = [
-      { label: "Total Vélos", value: stationInfo.total, color: "#B1B807" },
-      { label: "Mécaniques", value: stationInfo.menanic, color: "#DD0E82" },
-      { label: "Électriques", value: stationInfo.electrics, color: "#6793C8" },
-      { label: "Densité", value: stationInfo.density, color: "#F7B000" }
+      { label: "Total Bikes", value: stationInfo.total, color: "#B1B807" },
+      { label: "Mechanical", value: stationInfo.menanic, color: "#DD0E82" },
+      { label: "Electric", value: stationInfo.electrics, color: "#6793C8" },
+      { label: "Density", value: stationInfo.density, color: "#F7B000" }
     ];
 
     const svg = d3.select("#dashboard-chart");
     const width = 500;
-    svg.attr("width", width); // 👈 ajoute ça
+    svg.attr("width", width); 
     const height = +svg.attr("height");
     const margin = { top: 20, right: 20, bottom: 20, left: 100 };
 
@@ -532,11 +519,9 @@ function animateSlider(duration) {
       .range([margin.top, height - margin.bottom])
       .padding(0.3);
 
-    // Join
     const bars = svg.selectAll("rect")
       .data(metrics, d => d.label);
 
-    // Exit
     bars.exit().remove();
 
     // Update
@@ -547,7 +532,6 @@ function animateSlider(duration) {
       .attr("height", y.bandwidth())
       .attr("fill", d => d.color);
 
-    // Enter
     bars.enter()
       .append("rect")
       .attr("x", x(0))
@@ -558,14 +542,13 @@ function animateSlider(duration) {
       .transition().duration(600)
       .attr("width", d => x(d.value) - x(0));
 
-    // Labels
     const labels = svg.selectAll("text").data(metrics, d => d.label);
     labels.exit().remove();
 
     labels.transition().duration(600)
       .attr("x", d => x(d.value) + 5)
       .attr("y", d => y(d.label) + y.bandwidth() / 2)
-      .text(d => d.value.toFixed(2))
+      .text(d => d.value.toFixed(0))
       .style("font-size", "12px")
       .attr("fill", "white")
       .attr("alignment-baseline", "middle");
@@ -575,12 +558,11 @@ function animateSlider(duration) {
       .style("font-size", "12px")
       .attr("x", d => x(0))
       .attr("y", d => y(d.label) + y.bandwidth() / 2)
-      .text(d => d.value.toFixed(2))
+      .text(d => d.value.toFixed(0))
       .attr("fill", "white")
       .attr("alignment-baseline", "middle")
       .transition().duration(600)
       .attr("x", d => x(d.value) + 5);
-    // Labels à gauche (noms des métriques)
     const metricLabels = svg.selectAll(".metric-label")
     .data(metrics, d => d.label);
 
@@ -597,12 +579,10 @@ function animateSlider(duration) {
     .style("font-size", "12px")
     .text(d => d.label);
       }
- // ou l’heure initiale que tu veux
   } catch (error) {
     console.error("Erreur dans la génération du graphique :", error);
   }
 })();
-
 
 
 (async function() {
@@ -617,9 +597,9 @@ function animateSlider(duration) {
             children: Array.from(groupedData, ([city, stations]) => ({
                 name: city,
                 children: city === "Paris"
-                    ? // Si c'est Paris, on regroupe d'abord par arrondissement
+                    ? 
                       Array.from(d3.group(stations, d => d["arrondissement"]), ([arr, arrStations]) => ({
-                            name: arr, // Nom de l'arrondissement
+                            name: `Arrondissement ${arr}`, 
                             children: Array.from(d3.group(arrStations, d => d["Nom station"]),
                                 ([stationName, records]) => ({
                                     name: stationName,
@@ -627,7 +607,7 @@ function animateSlider(duration) {
                                 })
                             )
                       }))
-                    : // Si ce n'est pas Paris, on met directement les stations sous la ville
+                    : 
                       Array.from(d3.group(stations, d => d["Nom station"]),
                         ([stationName, records]) => ({
                             name: stationName,
@@ -648,7 +628,7 @@ function animateSlider(duration) {
         const rootPacked = pack(root);
  
         const colorScale = d3.scaleLinear()
-          .domain([0, 50, 100]) // à ajuster selon ta donnée max
+          .domain([0, 50, 100]) 
           .range(["#F7B000" ,"#DD0E82"]);
         
         const svg = d3.create("svg")
@@ -730,17 +710,14 @@ function animateSlider(duration) {
     }
 })();
 
-// Chargement et traitement du fichier CSV
+
 d3.csv("Velib.csv", d3.autoType).then(data => {
-  // 1. Supprimer les lignes "Hors Paris"
   const filtered = data.filter(d => d.arrondissement !== "Hors Paris");
 
-  // 2. Conversion en entier
   filtered.forEach(d => {
     d.arrondissement = +d.arrondissement;
   });
 
-  // 3. Moyenne de vélos disponibles par heure et arrondissement
   const grouped = d3.rollups(
     filtered,
     v => d3.mean(v, d => d["Nombre total vélos disponibles"]),
@@ -748,15 +725,13 @@ d3.csv("Velib.csv", d3.autoType).then(data => {
     d => d.arrondissement
   );
 
-  // 4. Mise à plat
   const flatData = [];
   for (const [hour, arrs] of grouped) {
     for (const [arrondissement, moyenne] of arrs) {
-      flatData.push({ hour, arrondissement, moyenne });
+      flatData.push({ hour,  arrondissement: `Arrondissement ${arrondissement}`, moyenne });
     }
   }
 
-  // 5. Dessiner le graphique
   drawArrondissementChart(flatData).then(svg => {
     document.getElementById("linechart-arrondissement").appendChild(svg);
   });
@@ -772,10 +747,11 @@ async function drawArrondissementChart(data) {
 
 
   function getColorByArrondissement(arr) {
-    if ([ 12,17,10,16,13].includes(arr)) return "#F7B000";      // Orange pour 15 et 12
-    if ([1, 2, 3,7,5,8,6,9,4].includes(arr)) return "#DD0E82";      // Rose pour 1, 2, 3
-    if ([19, 18,14,20,11,15].includes(arr)) return "#6793C8";       // Mauve pour 18 et 19
-    return "#000";                                   // Blanc ou autre pour le reste
+    const num = parseInt(arr.replace("Arrondissement ", ""));
+    if ([12, 17, 10, 16, 13].includes(num)) return "#F7B000";
+    if ([1, 2, 3, 7, 5, 8, 6, 9, 4].includes(num)) return "#DD0E82";
+    if ([19, 18, 14, 20, 11, 15].includes(num)) return "#6793C8";
+    return "#000";
   }
   
   const x = d3.scaleLinear()
@@ -825,7 +801,7 @@ async function drawArrondissementChart(data) {
         .attr("fill", "white")
         .attr("text-anchor", "start")
         .style("font-family", "Inter")
-        .text("↑ Moyenne vélos dispo.");
+        .text("↑ Average available bikes");
       g.selectAll("text")
         .attr("fill", "white")
         .style("font-family", "Inter");
@@ -853,14 +829,13 @@ async function drawArrondissementChart(data) {
 
     const dot = svg.append("g").attr("display", "none");
 
-    // Ajoute le cercle
     dot.append("circle").attr("r", 2.5);
     
-    // Ajoute le texte, bien visible
+
     dot.append("text")
         .attr("text-anchor", "middle")
-        .attr("y", -12) // un peu plus haut que le rond
-        .style("fill", "#ffffff") // texte noir
+        .attr("y", -12) 
+        .style("fill", "#ffffff") 
         .style("font-size", "12px")
         .style("font-weight", "bold")
         .style("opacity", 1);
@@ -880,7 +855,7 @@ async function drawArrondissementChart(data) {
         .filter(({ z }) => z === arrondissement).raise();
     dot.attr("transform", `translate(${xVal},${yVal})`);
     dot.select("circle").attr("fill", getColorByArrondissement(arrondissement));
-    dot.select("text").text(`Arr. ${arrondissement}`);
+    dot.select("text").text(` ${arrondissement}`);
     svg.property("value", data[i]).dispatch("input", { bubbles: true });
   }
 
