@@ -389,8 +389,8 @@ function animateSlider(duration) {
             .attr("transform", `translate(${width - 160}, ${height - 40})`);
         
           const legendItems = [
-            { label: "Vélos mécaniques", color: "#DD0E82" },
-            { label: "Vélos électriques", color: "#6793C8" }
+            { label: "Regular Bike", color: "#DD0E82" },
+            { label: "Electrical Bike", color: "#6793C8" }
           ];
         
           legend.selectAll("rect")
