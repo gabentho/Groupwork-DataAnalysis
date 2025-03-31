@@ -731,17 +731,17 @@ function animateSlider(duration) {
     }
 })();
 
-// Chargement et traitement du fichier CSV
+// Loading and processing the CSV file
 d3.csv("Velib.csv", d3.autoType).then(data => {
   // 1. Supprimer les lignes "Hors Paris"
   const filtered = data.filter(d => d.arrondissement !== "Hors Paris");
 
-  // 2. Conversion en entier
+  // 2. Convert to integer
   filtered.forEach(d => {
     d.arrondissement = +d.arrondissement;
   });
 
-  // 3. Moyenne de vélos disponibles par heure et arrondissement
+  // 3. Average number of available bikes per hour and district
   const grouped = d3.rollups(
     filtered,
     v => d3.mean(v, d => d["Nombre total vélos disponibles"]),
@@ -749,7 +749,7 @@ d3.csv("Velib.csv", d3.autoType).then(data => {
     d => d.arrondissement
   );
 
-  // 4. Mise à plat
+  // 4. flattening the data
   const flatData = [];
   for (const [hour, arrs] of grouped) {
     for (const [arrondissement, moyenne] of arrs) {
@@ -757,7 +757,7 @@ d3.csv("Velib.csv", d3.autoType).then(data => {
     }
   }
 
-  // 5. Dessiner le graphique
+  // 5. draw the graph
   drawArrondissementChart(flatData).then(svg => {
     document.getElementById("linechart-arrondissement").appendChild(svg);
   });
