@@ -19,6 +19,13 @@ In this project, we analyze bike-sharing data from Paris to identify usage patte
 
 Website coming soon
 
+## Want to use our project or visualize it with your own IDE ?
+Follow these steps :
+- Step 1 : Download as zip by clicking on the green button "code" our repository
+- Step 2 : open the folder with your IDE (VScode, spyder, etc...)
+- Step 3 : We advise you to download the extension Live Server, which will allow you to launch the website locally on your computer
+- Step 4 : Once done, you just have to launch the local host by using on VScode the command "command + maj + p" and select "Live server : Open with Live Server"
+
 ## Want to follow our journey ? :
 
 [Look at our progression here](./Progress_wiki)
