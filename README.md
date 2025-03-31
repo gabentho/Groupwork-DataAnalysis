@@ -1,6 +1,6 @@
 # MobileData-Visualization
 
-![Teaser](./teaser.png)
+![Teaser](.Assets/teaser.png)
 
 ## Project Description : 
 
