@@ -710,7 +710,6 @@ function animateSlider(duration) {
     }
 })();
 
-
 d3.csv("Velib.csv", d3.autoType).then(data => {
   const filtered = data.filter(d => d.arrondissement !== "Hors Paris");
 
