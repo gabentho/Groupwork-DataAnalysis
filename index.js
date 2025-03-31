@@ -1,6 +1,4 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-import * as topojson from "https://unpkg.com/topojson-client@3?module";
-
 
 function animateSlider(duration) {
   // Fonction vide temporairement pour éviter l'erreur
