@@ -17,7 +17,7 @@ In this project, we analyze bike-sharing data from Paris to identify usage patte
 
 ## Want to visit our website ? : 
 
-Website coming soon
+[Our Website](https://gabentho.github.io/Groupwork-DataAnalysis/)
 
 ## Want to use our project or visualize it with your own IDE ?
 Follow these steps :
