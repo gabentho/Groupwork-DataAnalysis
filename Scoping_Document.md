@@ -29,6 +29,8 @@ How will your visualization be helpful for them?
 Identify three related projects or visualizations. Explain how they inspire or differ from your approach.
 
 We took inspiration from existing visualizations such as [MBTA Data Visualizations](http://mbtaviz.github.io/), which demonstrate how urban mobility data can be effectively communicated through simple and clear visuals.  
+We also drew inspiration for the design of our website from the [Apple Website](https://www.apple.com), and you’ll notice a similar minimalist effect on our site.
+Finally we inspired ourselves from the [Velib website](https://www.velib-metropole.fr) for all the colors of the website, to stay in the same theme
 However, we also developed many of our own ideas and showed creativity throughout the project, especially in how we merged hourly data and visualized station-level patterns.
 
 ### Data Sources
